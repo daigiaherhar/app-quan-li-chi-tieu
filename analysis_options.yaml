@@ -1,0 +1,54 @@
+# File cấu hình phân tích mã nguồn cho Flutter Project
+# Tuân theo quy tắc từ gói flutter_lints do Google phát hành
+
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # 🔒 Bảo mật & An toàn
+    avoid_print: true  # Không dùng print trong production
+    secure_pubspec_urls: true  # Sử dụng HTTPS cho URL trong pubspec.yaml
+
+    # 🧼 Chất lượng mã nguồn
+    prefer_const_constructors: true  # Dùng const khi có thể
+    prefer_const_literals_to_create_immutables: true  # Dùng const cho list/map/set
+    unnecessary_this: true  # Tránh dùng this nếu không cần
+    always_use_package_imports: true  # Import theo package thay vì relative path
+    sort_constructors_first: true  # Constructor đặt lên đầu class
+    sort_pub_dependencies: false  # Không ép buộc sắp xếp pubspec
+    prefer_final_fields: true    # Nếu một biến không bao giờ bị gán lại sau khi khai báo, thì bạn nên dùng final thay vì var
+
+    # 🧪 An toàn & hiệu năng
+    no_logic_in_create_state: true  # Tránh viết logic trong createState()
+    use_key_in_widget_constructors: true  # Dùng key cho Stateless/Stateful Widget
+    sized_box_for_whitespace: true  # Tránh dùng Container chỉ để tạo khoảng trắng
+
+    # 🧩 Dễ bảo trì & tái sử dụng
+    avoid_unnecessary_containers: true
+    avoid_init_to_null: true
+    constant_identifier_names: true  # Cho phép tên hằng viết hoa linh hoạt
+
+    use_build_context_synchronously: true
+    avoid_returning_null_for_void: true
+    file_names: true
+    require_trailing_commas: true
+    camel_case_types: true
+    always_declare_return_types: true
+    no_leading_underscores_for_local_identifiers: true
+    unnecessary_constructor_name: true
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.mocks.dart"
+    - "**/*.config.dart"
+
+  errors:
+    missing_required_param: error
+    missing_return: error
+    dead_code: warning
+    unused_import: warning
+    use_build_context_synchronously: warning
+    invalid_annotation_target: ignore
+    unnecessary_underscores: ignore
