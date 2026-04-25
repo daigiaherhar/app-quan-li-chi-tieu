@@ -1,0 +1,7 @@
+interface:
+  display_name: "Create New Feature"
+  short_description: "Scaffold Flutter feature skeletons"
+  default_prompt: "Use $create_new_feature to scaffold a new Flutter feature in this repo."
+
+policy:
+  allow_implicit_invocation: true

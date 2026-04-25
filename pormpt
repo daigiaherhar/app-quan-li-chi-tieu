@@ -1,0 +1,316 @@
+Tôi muốn xây dựng một app quản lý chi tiêu cá nhân bằng Flutter.
+
+Yêu cầu bắt buộc:
+- Không cần đăng nhập, không cần đăng ký tài khoản
+- Dữ liệu lưu local trên thiết bị
+- Dùng Riverpod để quản lý state
+- Kiến trúc rõ ràng, dễ maintain, dễ scale
+- Tối ưu cho mobile app
+- UI hiện đại, đơn giản, dễ dùng
+- Có thể mở rộng đồng bộ cloud sau này nhưng hiện tại chỉ local
+- Ưu tiên tốc độ nhập liệu nhanh và trải nghiệm người dùng rõ ràng
+
+Mục tiêu app:
+- Ghi lại thu nhập và chi tiêu hằng ngày
+- Theo dõi số dư hiện tại
+- Quản lý nhiều ví/tài khoản như tiền mặt, ngân hàng, ví điện tử
+- Quản lý danh mục thu/chi
+- Tạo ngân sách theo tháng hoặc theo danh mục
+- Xem lịch sử giao dịch
+- Xem báo cáo thống kê theo ngày/tháng/năm
+- Cảnh báo khi gần vượt hoặc vượt ngân sách
+- Hỗ trợ giao dịch lặp lại
+- Có cài đặt cơ bản như tiền tệ, định dạng ngày, nhắc nhở nhập chi tiêu
+
+Hãy đóng vai trò là senior Flutter architect + product designer và giúp tôi xây dựng toàn bộ app này.
+
+Tôi muốn bạn trả lời đầy đủ theo các mục sau:
+
+1. Product overview
+- Mô tả sản phẩm
+- Đối tượng người dùng
+- Vấn đề người dùng đang gặp
+- Giá trị app mang lại
+
+2. Feature list
+Chia tính năng thành:
+- MVP
+- Giai đoạn nâng cao
+- Tương lai
+
+3. User flow
+Thiết kế chi tiết các flow:
+- Mở app lần đầu
+- Onboarding
+- Tạo ví đầu tiên
+- Tạo danh mục đầu tiên
+- Thêm thu nhập
+- Thêm chi tiêu
+- Xem lịch sử giao dịch
+- Chỉnh sửa / xóa giao dịch
+- Tạo ngân sách
+- Nhận cảnh báo vượt ngân sách
+- Xem báo cáo
+- Cài đặt app
+
+4. Danh sách màn hình
+Với mỗi màn hình, mô tả:
+- Tên màn hình
+- Mục đích
+- Thành phần UI chính
+- Hành động người dùng
+- Empty state / loading / error state
+
+Các màn hình tối thiểu gồm:
+- Splash
+- Onboarding
+- Dashboard
+- Transaction List
+- Add / Edit Transaction
+- Transaction Detail
+- Wallet Management
+- Category Management
+- Budget List
+- Add / Edit Budget
+- Reports
+- Settings
+- Reminder Settings
+
+5. Kiến trúc Flutter
+Yêu cầu:
+- Dùng Flutter + Riverpod
+- Áp dụng Clean Architecture hoặc feature-first architecture hiện đại
+- Tách rõ presentation / domain / data
+- Dễ test
+- Dễ mở rộng
+- Có routing rõ ràng
+- Có dependency injection
+- Có error handling
+- Có reusable components
+
+Hãy đề xuất:
+- Kiến trúc phù hợp nhất
+- Lý do chọn
+- Cách tổ chức module
+- Cách quản lý provider trong Riverpod
+- Cách tách state / action / side effect
+
+6. Folder structure
+Hãy tạo cấu trúc thư mục hoàn chỉnh cho project Flutter này theo Riverpod.
+Các module chính:
+- app
+- core
+- shared
+- features/dashboard
+- features/transaction
+- features/wallet
+- features/category
+- features/budget
+- features/report
+- features/settings
+- features/onboarding
+
+Mỗi module cần có:
+- data
+- domain
+- presentation
+
+Hãy trả về dạng cây thư mục rõ ràng.
+
+7. Package đề xuất
+Hãy đề xuất các package Flutter nên dùng cho app này và giải thích lý do.
+Bao gồm các nhóm:
+- state management
+- routing
+- local database
+- serialization
+- intl / format
+- chart
+- local notification
+- form / validation
+- utility
+
+Ưu tiên package ổn định, phổ biến, dễ maintain.
+
+8. Database schema
+Thiết kế local database schema cho app.
+Các entity chính:
+- Wallet
+- Category
+- Transaction
+- Budget
+- BudgetAlert
+- RecurringTransaction
+- AppSetting
+- ReminderSetting
+
+Yêu cầu:
+- Mô tả field
+- Kiểu dữ liệu
+- Quan hệ giữa các bảng
+- Gợi ý index nếu cần
+- createdAt, updatedAt nếu phù hợp
+
+9. Entity và model
+Hãy tạo danh sách entity/domain model cho từng module.
+Giải thích:
+- Field nào bắt buộc
+- Field nào optional
+- Enum cần có
+- Quy tắc đặt tên rõ ràng
+
+10. Business logic
+Hãy mô tả business logic chi tiết cho:
+- Tính số dư hiện tại
+- Tổng thu nhập / chi tiêu
+- Lọc giao dịch theo ngày / tuần / tháng / năm
+- Tính ngân sách đã sử dụng
+- Cảnh báo 80% / 100% / vượt ngân sách
+- Giao dịch lặp lại
+- Chuyển tiền giữa các ví
+- Xử lý xóa danh mục đang được sử dụng
+- Xử lý chỉnh sửa giao dịch làm thay đổi số liệu dashboard
+
+11. Riverpod state design
+Hãy đề xuất cách tổ chức state bằng Riverpod cho từng module.
+Cần nêu rõ:
+- Dùng Provider / StateNotifierProvider / AsyncNotifierProvider / NotifierProvider khi nào
+- Provider nào là global
+- Provider nào là feature-scoped
+- Cách watch / read hợp lý
+- Cách tránh rebuild thừa
+- Cách combine dữ liệu dashboard từ nhiều provider
+
+12. UI/UX guideline
+Thiết kế UI theo phong cách:
+- Modern
+- Minimal
+- Clean
+- Trustworthy
+- Mobile first
+
+Yêu cầu:
+- Màu sắc rõ ràng cho income và expense
+- Typography dễ đọc
+- Form nhập nhanh
+- Dashboard dễ hiểu
+- Empty state đẹp
+- UX ít thao tác
+- Bottom navigation hợp lý
+- FAB thêm giao dịch nhanh
+
+Hãy đề xuất:
+- Color system
+- Typography
+- Spacing
+- Component list
+- Layout từng màn hình chính
+
+13. Dashboard design
+Mô tả chi tiết màn hình Dashboard, gồm:
+- Số dư hiện tại
+- Tổng thu tháng này
+- Tổng chi tháng này
+- Còn lại
+- Biểu đồ chi tiêu theo danh mục
+- Giao dịch gần đây
+- Cảnh báo ngân sách
+- Nút thêm giao dịch nhanh
+
+Giải thích cách sắp xếp thông tin theo mức độ ưu tiên.
+
+14. Form Add/Edit Transaction
+Thiết kế form thêm/sửa giao dịch.
+Các field:
+- Transaction type: income / expense / transfer
+- Amount
+- Category
+- Wallet
+- Destination wallet nếu là transfer
+- Date time
+- Note
+- Tags nếu có
+- Attachment / receipt image nếu có
+
+Hãy mô tả:
+- UI
+- Validation
+- Luồng xử lý submit
+- Trường hợp đặc biệt
+
+15. Budget module
+Thiết kế tính năng ngân sách:
+- Tạo ngân sách theo tháng
+- Tạo theo danh mục
+- Tính phần trăm đã dùng
+- Hiển thị progress
+- Cảnh báo gần hết
+- Cảnh báo vượt
+- Chỉnh sửa / xóa ngân sách
+
+Hãy mô tả cả business logic và UI.
+
+16. Report module
+Thiết kế hệ thống báo cáo:
+- Tổng thu chi theo thời gian
+- Chi tiêu theo danh mục
+- So sánh các tháng
+- Top danh mục chi nhiều
+- Xu hướng chi tiêu
+- Tỷ lệ tiết kiệm
+
+Gợi ý loại chart phù hợp cho từng loại báo cáo.
+
+17. Settings module
+Thiết kế màn hình Settings:
+- Currency
+- Language nếu có
+- Date format
+- Number format
+- Reminder nhập chi tiêu
+- Export dữ liệu
+- Import / backup local
+- Reset dữ liệu
+
+18. Code convention
+Hãy đề xuất coding convention cho project:
+- Naming
+- File naming
+- Provider naming
+- Repository naming
+- Use case naming
+- Mapper naming
+- Folder naming
+- UI widget naming
+
+19. Kế hoạch phát triển MVP
+Hãy chia roadmap thành các phase:
+- Phase 1: nền tảng project
+- Phase 2: wallet + category
+- Phase 3: transaction
+- Phase 4: dashboard
+- Phase 5: budget
+- Phase 6: reports
+- Phase 7: settings + reminder
+
+Với mỗi phase, nêu:
+- Mục tiêu
+- Những gì phải hoàn thành
+- Phụ thuộc
+- Kết quả đầu ra
+
+20. Code mẫu
+Sau khi phân tích xong, hãy tạo code mẫu cho module Transaction bằng Flutter + Riverpod, gồm:
+- entity
+- model
+- repository
+- local datasource interface
+- provider
+- state
+- notifier
+- screen list
+- add/edit screen
+- simple validation
+- example fake/local implementation
+
+Yêu cầu code rõ ràng, thực tế, dễ copy vào project.

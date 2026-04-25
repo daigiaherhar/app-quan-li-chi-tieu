@@ -1,0 +1,7 @@
+Feature scaffold checklist
+
+1. Replace placeholder title/body text in the generated page and widgets.
+2. Add Riverpod provider or notifier in presentation/providers when state is needed.
+3. Implement repository in data/ when a real data source exists.
+4. Wire route/navigation to the new page.
+5. Run flutter analyze after editing generated files.

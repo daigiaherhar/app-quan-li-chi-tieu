@@ -1,3 +1,3 @@
 abstract final class AppRoutePaths {
-  static const String testBlabla = '/';
+  static const String home = '/';
 }

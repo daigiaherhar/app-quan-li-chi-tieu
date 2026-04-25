@@ -15,15 +15,15 @@ class AppGapScheme {
   AppGapScheme._(this.context);
   final BuildContext context;
 
-  // Vertical Gaps (Height)
-  Widget get h2 => SizedBox(height: AppSizesStatic.s2.h(context));
-  Widget get h4 => SizedBox(height: AppSizesStatic.s4.h(context));
-  Widget get h8 => SizedBox(height: AppSizesStatic.s8.h(context));
-  Widget get h12 => SizedBox(height: AppSizesStatic.s12.h(context));
-  Widget get h16 => SizedBox(height: AppSizesStatic.s16.h(context));
-  Widget get h20 => SizedBox(height: AppSizesStatic.s20.h(context));
-  Widget get h24 => SizedBox(height: AppSizesStatic.s24.h(context));
-  Widget get h32 => SizedBox(height: AppSizesStatic.s32.h(context));
+  // Vertical Gaps (Scale theo width để giữ tỷ lệ)
+  Widget get h2 => SizedBox(height: AppSizesStatic.s2.w(context));
+  Widget get h4 => SizedBox(height: AppSizesStatic.s4.w(context));
+  Widget get h8 => SizedBox(height: AppSizesStatic.s8.w(context));
+  Widget get h12 => SizedBox(height: AppSizesStatic.s12.w(context));
+  Widget get h16 => SizedBox(height: AppSizesStatic.s16.w(context));
+  Widget get h20 => SizedBox(height: AppSizesStatic.s20.w(context));
+  Widget get h24 => SizedBox(height: AppSizesStatic.s24.w(context));
+  Widget get h32 => SizedBox(height: AppSizesStatic.s32.w(context));
 
   // Horizontal Gaps (Width)
   Widget get w2 => SizedBox(width: AppSizesStatic.s2.w(context));

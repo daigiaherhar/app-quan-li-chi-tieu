@@ -26,7 +26,7 @@ class AppPaddingScheme {
   EdgeInsets get h12 => EdgeInsets.symmetric(horizontal: AppSizesStatic.s12.w(context));
   EdgeInsets get h16 => EdgeInsets.symmetric(horizontal: AppSizesStatic.s16.w(context));
 
-  EdgeInsets get v8 => EdgeInsets.symmetric(vertical: AppSizesStatic.s8.h(context));
-  EdgeInsets get v12 => EdgeInsets.symmetric(vertical: AppSizesStatic.s12.h(context));
-  EdgeInsets get v16 => EdgeInsets.symmetric(vertical: AppSizesStatic.s16.h(context));
+  EdgeInsets get v8 => EdgeInsets.symmetric(vertical: AppSizesStatic.s8.w(context));
+  EdgeInsets get v12 => EdgeInsets.symmetric(vertical: AppSizesStatic.s12.w(context));
+  EdgeInsets get v16 => EdgeInsets.symmetric(vertical: AppSizesStatic.s16.w(context));
 }
