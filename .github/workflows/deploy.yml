@@ -16,7 +16,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.1" # Chỉnh sửa version Flutter nếu cần
+          flutter-version: "3.41.2" # Chỉnh sửa version Flutter nếu cần
 
       - name: Enable Flutter Web
         run: flutter config --enable-web
