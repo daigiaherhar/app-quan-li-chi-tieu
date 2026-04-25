@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main # Chạy khi có push lên nhánh main
-
+      
+permissions:
+  contents: write
+  
 jobs:
   build:
     runs-on: ubuntu-latest
