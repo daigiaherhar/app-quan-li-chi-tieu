@@ -28,7 +28,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Flutter Web
-        run: flutter build web --base-href "/portfolio_thanh_tung/"
+        run: flutter build web --base-href "/app-quan-li-chi-tieu/"
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
