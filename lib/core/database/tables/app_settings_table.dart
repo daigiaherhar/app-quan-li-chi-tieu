@@ -4,7 +4,8 @@ class AppSettings extends Table {
   IntColumn get id => integer().withDefault(const Constant<int>(1))();
   TextColumn get defaultCurrencyCode =>
       text().withDefault(const Constant<String>('VND'))();
-  TextColumn get locale => text().withDefault(const Constant<String>('vi_VN'))();
+  TextColumn get locale =>
+      text().withDefault(const Constant<String>('vi_VN'))();
   TextColumn get dateFormat =>
       text().withDefault(const Constant<String>('dd/MM/yyyy'))();
   TextColumn get themeMode =>

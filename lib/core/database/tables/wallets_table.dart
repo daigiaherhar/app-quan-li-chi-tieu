@@ -6,8 +6,10 @@ class Wallets extends Table {
   TextColumn get type => text()();
   TextColumn get currencyCode =>
       text().withDefault(const Constant<String>('VND'))();
-  IntColumn get openingBalance => integer().withDefault(const Constant<int>(0))();
-  IntColumn get currentBalance => integer().withDefault(const Constant<int>(0))();
+  IntColumn get openingBalance =>
+      integer().withDefault(const Constant<int>(0))();
+  IntColumn get currentBalance =>
+      integer().withDefault(const Constant<int>(0))();
   IntColumn get isActive => integer().withDefault(const Constant<int>(1))();
   IntColumn get isDefault => integer().withDefault(const Constant<int>(0))();
   IntColumn get displayOrder => integer().withDefault(const Constant<int>(0))();

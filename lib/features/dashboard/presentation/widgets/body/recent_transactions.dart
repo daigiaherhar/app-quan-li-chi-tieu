@@ -91,9 +91,9 @@ class _RecentTransactionTile extends StatelessWidget {
     final Color background = isExpense
         ? context.colors.expenseSurface
         : context.colors.incomeSurface;
-    final IconData icon = isExpense
-        ? Icons.arrow_outward_rounded
-        : Icons.arrow_downward_rounded;
+    final String icon = isExpense
+        ? Assets.assetIcons.iconThu
+        : Assets.assetIcons.iconChi;
 
     return Row(
       children: <Widget>[
@@ -104,7 +104,13 @@ class _RecentTransactionTile extends StatelessWidget {
             color: background,
             borderRadius: context.sizes.r14,
           ),
-          child: Icon(icon, color: color, size: 22),
+          child: Padding(
+            padding: context.padding.all4,
+            child: SvgPicture.asset(
+              icon,
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+            ),
+          ),
         ),
         context.gap.w12,
         Expanded(
@@ -112,9 +118,7 @@ class _RecentTransactionTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                transaction.note?.isNotEmpty == true
-                    ? transaction.note!
-                    : (isExpense ? 'Khoản chi' : 'Khoản thu'),
+                transaction.nameCategory ?? "",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: context.textStyles.bodyMedium.copyWith(
@@ -122,6 +126,13 @@ class _RecentTransactionTile extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
+              if (transaction.note != null && transaction.note!.isNotEmpty)
+                Text(
+                  transaction.note ?? "",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.textStyles.label.copyWith(color: Colors.grey),
+                ),
               context.gap.h2,
               Text(
                 DateFormat('dd/MM/yyyy').format(transaction.happenedAt),

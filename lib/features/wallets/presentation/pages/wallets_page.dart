@@ -23,6 +23,7 @@ class WalletsPage extends ConsumerWidget {
     final AsyncValue<List<WalletEntity>> walletsAsync = ref.watch(
       walletsProvider,
     );
+
     return Scaffold(
       backgroundColor: context.colors.dashboardBackground,
       appBar: BaseAppBar(

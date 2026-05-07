@@ -1,13 +1,17 @@
 part of '../app_database.dart';
 
-class Categories extends Table {
+@DataClassName('CategoryTransaction')
+class CategoriesTransaction extends Table {
   TextColumn get id => text()();
   TextColumn get name => text()();
   TextColumn get kind => text()();
   TextColumn get iconKey => text().nullable()();
   TextColumn get colorHex => text().nullable()();
-  TextColumn get parentId =>
-      text().nullable().references(Categories, #id, onDelete: KeyAction.setNull)();
+  TextColumn get parentId => text().nullable().references(
+    CategoriesTransaction,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
   IntColumn get isSystem => integer().withDefault(const Constant<int>(0))();
   IntColumn get isActive => integer().withDefault(const Constant<int>(1))();
   IntColumn get displayOrder => integer().withDefault(const Constant<int>(0))();

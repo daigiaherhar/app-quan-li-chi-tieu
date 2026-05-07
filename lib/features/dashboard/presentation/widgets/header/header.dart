@@ -14,27 +14,25 @@ class _DashboardHeader extends StatelessWidget {
     );
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
-        16.w(context),
-        12.w(context),
-        16.w(context),
-        18.w(context),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          const SizedBox(height: kToolbarHeight),
-          const _GreetingRow(),
-          context.gap.h20,
-          _BalanceHeroCard(summary: summary),
-        ],
-      ),
-    ).animate().slideY(
-          begin: -1,
-          end: 0,
-          duration: 800.ms,
-          curve: Curves.easeOutBack,
-        ).fadeIn(duration: 600.ms);
+          padding: EdgeInsets.fromLTRB(
+            16.w(context),
+            12.w(context),
+            16.w(context),
+            18.w(context),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const SizedBox(height: kToolbarHeight),
+              const _GreetingRow(),
+              context.gap.h20,
+              _BalanceHeroCard(summary: summary),
+            ],
+          ),
+        )
+        .animate()
+        .slideY(begin: -1, end: 0, duration: 800.ms, curve: Curves.easeOutBack)
+        .fadeIn(duration: 600.ms);
   }
 }
 
@@ -126,6 +124,39 @@ class _BalanceHeroCard extends StatelessWidget {
 
   final _MonthlySummary summary;
 
+  Widget _buildStats(BuildContext context) {
+    final Widget incomeTile = _HeroStatTile(
+      label: 'Thu nhập',
+      amount: formatSignedAppCurrency(summary.income, isExpense: false),
+      iconSvg: Assets.assetLottie.upArrow,
+      iconColor: context.colors.income,
+    );
+    final Widget expenseTile = _HeroStatTile(
+      label: 'Chi tiêu',
+      amount: formatSignedAppCurrency(summary.expense, isExpense: true),
+      iconSvg: Assets.assetLottie.downArrow,
+      iconColor: context.colors.expense,
+    );
+
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        if (constraints.maxWidth < 280) {
+          return Column(
+            children: <Widget>[incomeTile, context.gap.h12, expenseTile],
+          );
+        }
+
+        return Row(
+          children: <Widget>[
+            Expanded(child: incomeTile),
+            context.gap.w12,
+            Expanded(child: expenseTile),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Color> gradient = context.colors.heroGradient;
@@ -194,48 +225,26 @@ class _BalanceHeroCard extends StatelessWidget {
             ],
           ),
           context.gap.h8,
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              formatAppCurrency(summary.balance),
-              maxLines: 1,
-              softWrap: false,
-              style: context.textStyles.h1.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w800,
-                fontSize: 30.w(context),
+          SizedBox(
+            width: double.infinity,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                formatAppCurrency(summary.balance),
+                maxLines: 1,
+                softWrap: false,
+                style: context.textStyles.h1.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 30.w(context),
+                  height: 1.05,
+                ),
               ),
             ),
           ),
           context.gap.h20,
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: _HeroStatTile(
-                  label: 'Thu nhập',
-                  amount: formatSignedAppCurrency(
-                    summary.income,
-                    isExpense: false,
-                  ),
-                  icon: Icons.south_west_rounded,
-                  iconColor: context.colors.income,
-                ),
-              ),
-              context.gap.w12,
-              Expanded(
-                child: _HeroStatTile(
-                  label: 'Chi tiêu',
-                  amount: formatSignedAppCurrency(
-                    summary.expense,
-                    isExpense: true,
-                  ),
-                  icon: Icons.north_east_rounded,
-                  iconColor: context.colors.expense,
-                ),
-              ),
-            ],
-          ),
+          _buildStats(context),
         ],
       ),
     );
@@ -246,13 +255,13 @@ class _HeroStatTile extends StatelessWidget {
   const _HeroStatTile({
     required this.label,
     required this.amount,
-    required this.icon,
+    required this.iconSvg,
     required this.iconColor,
   });
 
   final String label;
   final String amount;
-  final IconData icon;
+  final String iconSvg;
   final Color iconColor;
 
   @override
@@ -260,48 +269,63 @@ class _HeroStatTile extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 12.w(context),
-        vertical: 10.w(context),
+        vertical: 12.w(context),
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.16),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+        color: Colors.white.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Container(
-            width: 30,
-            height: 30,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            child: Icon(icon, size: 16, color: iconColor),
-          ),
-          context.gap.w8,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  label,
-                  style: context.textStyles.label.copyWith(
-                    color: Colors.white.withValues(alpha: 0.85),
-                  ),
+          Row(
+            children: <Widget>[
+              Container(
+                width: 30.w(context),
+                height: 30.w(context),
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.92),
+                  borderRadius: context.sizes.r12,
                 ),
-                Text(
-                  amount,
+                alignment: Alignment.center,
+                child: Lottie.asset(iconSvg),
+                // Icon(iconSvg, size: 16.w(context), color: iconColor),
+              ),
+              context.gap.w8,
+              Expanded(
+                child: Text(
+                  label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: context.textStyles.bodyMedium.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
+                  style: context.textStyles.label.copyWith(
+                    color: Colors.white.withValues(alpha: 0.86),
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-              ],
+              ),
+            ],
+          ),
+          context.gap.h10,
+          SizedBox(
+            width: double.infinity,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                amount,
+                maxLines: 1,
+                softWrap: false,
+                style: context.textStyles.bodyLarge.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  height: 1.05,
+                ),
+              ),
             ),
           ),
+          context.gap.h4,
         ],
       ),
     );

@@ -3,10 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:quan_ly_chi_tieu/core/constants/constants.dart';
-import 'package:quan_ly_chi_tieu/core/models/transaction_category_entity.dart';
+import 'package:quan_ly_chi_tieu/core/database/app_database.dart'
+    show kCategoryKindExpense, kCategoryKindIncome;
+import 'package:quan_ly_chi_tieu/features/categories_transaction/presentation/models/transaction_category_entity.dart';
 import 'package:quan_ly_chi_tieu/core/models/transaction_wallet_entity.dart';
 import 'package:quan_ly_chi_tieu/core/utils/size_utils.dart';
 import 'package:quan_ly_chi_tieu/core/utils/vnd_amount_input_format.dart';
+import 'package:quan_ly_chi_tieu/features/categories_transaction/presentation/providers/categories_providers.dart';
 import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transaction_notifier.dart';
 import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transaction_state.dart';
 import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transactions_providers.dart';
@@ -59,41 +62,40 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
         .selectHappenedAt(picked);
   }
 
-  Future<void> _openCategorySheet(TransactionState state) async {
-    final TransactionNotifier notifier =
-        ref.read(transactionProvider(widget.kind).notifier);
-    final bool isIncome = widget.kind == TransactionFlowKind.income;
-    if (isIncome) {
-      final TransactionCategoryEntity? picked =
-          await showLabeledOptionPickerSheet<TransactionCategoryEntity>(
-            context: context,
-            title: 'Chọn nguồn thu',
-            items: notifier.incomeCategoryOptions,
-            labelOf: (TransactionCategoryEntity c) => c.label,
-            iconOf: (TransactionCategoryEntity c) => c.icon,
-            selected: state.selectedIncomeCategory,
-            accentColor: context.colors.income,
-            selectedSurfaceColor: context.colors.incomeSurface,
-          );
-      if (picked != null) {
-        notifier.selectIncomeCategory(picked);
-      }
+  Future<void> _openCategorySheet(
+    TransactionState state,
+    List<TransactionCategoryEntity> categories,
+  ) async {
+    if (categories.isEmpty) {
       return;
     }
+    final TransactionNotifier notifier = ref.read(
+      transactionProvider(widget.kind).notifier,
+    );
+    final bool isIncome = widget.kind == TransactionFlowKind.income;
     final TransactionCategoryEntity? picked =
         await showLabeledOptionPickerSheet<TransactionCategoryEntity>(
           context: context,
-          title: 'Chọn hạng mục chi',
-          items: notifier.expenseCategoryOptions,
-          labelOf: (TransactionCategoryEntity c) => c.label,
-          iconOf: (TransactionCategoryEntity c) => c.icon,
-          selected: state.selectedExpenseCategory,
-          accentColor: context.colors.expense,
-          selectedSurfaceColor: context.colors.expenseSurface,
+          title: isIncome ? 'Chọn nguồn thu' : 'Chọn hạng mục chi',
+          items: categories,
+          labelOf: (TransactionCategoryEntity category) => category.label,
+          iconOf: (TransactionCategoryEntity category) => category.icon,
+          selected: state.selectedCategory,
+          accentColor: isIncome
+              ? context.colors.income
+              : context.colors.expense,
+          selectedSurfaceColor: isIncome
+              ? context.colors.incomeSurface
+              : context.colors.expenseSurface,
         );
-    if (picked != null) {
-      notifier.selectExpenseCategory(picked);
+    if (picked == null) {
+      return;
     }
+    if (isIncome) {
+      notifier.selectIncomeCategory(picked);
+      return;
+    }
+    notifier.selectExpenseCategory(picked);
   }
 
   Future<void> _onSave() async {
@@ -153,15 +155,17 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
   ) async {
     final TransactionWalletEntity? picked =
         await showLabeledOptionPickerSheet<TransactionWalletEntity>(
-      context: context,
-      title: 'Chọn ví',
-      items: wallets,
-      labelOf: (TransactionWalletEntity wallet) => wallet.name,
-      iconOf: (TransactionWalletEntity wallet) => wallet.icon,
-      selected: selectedWallet,
-      accentColor: accent,
-      selectedSurfaceColor: context.colors.pastelIndigo.withValues(alpha: 0.4),
-    );
+          context: context,
+          title: 'Chọn ví',
+          items: wallets,
+          labelOf: (TransactionWalletEntity wallet) => wallet.name,
+          iconOf: (TransactionWalletEntity wallet) => wallet.icon,
+          selected: selectedWallet,
+          accentColor: accent,
+          selectedSurfaceColor: context.colors.pastelIndigo.withValues(
+            alpha: 0.4,
+          ),
+        );
     if (!mounted || picked == null) {
       return;
     }
@@ -236,6 +240,11 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
     final AsyncValue<List<TransactionWalletEntity>> walletsAsync = ref.watch(
       transactionWalletOptionsProvider,
     );
+    final String categoryKind = state.isIncome
+        ? kCategoryKindIncome
+        : kCategoryKindExpense;
+    final AsyncValue<List<TransactionCategoryEntity>> categoriesAsync = ref
+        .watch(transactionCategoryOptionsProvider(categoryKind));
     _listenSubmitStatus();
     final String dateTimeLabel = DateFormat(
       'dd/MM/yyyy · HH:mm',
@@ -272,6 +281,14 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
       loading: () => const <TransactionWalletEntity>[],
       error: (_, __) => const <TransactionWalletEntity>[],
     );
+    final List<TransactionCategoryEntity> categoryOptions = categoriesAsync
+        .when(
+          data: (List<TransactionCategoryEntity> value) => value.isEmpty
+              ? <TransactionCategoryEntity>[state.selectedCategory]
+              : value,
+          loading: () => <TransactionCategoryEntity>[state.selectedCategory],
+          error: (_, __) => <TransactionCategoryEntity>[state.selectedCategory],
+        );
     final TransactionWalletEntity? selectedWallet = _resolveSelectedWallet(
       wallets,
     );
@@ -356,7 +373,8 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
                           value: state.selectedCategory.label,
                           onTap: state.isSaving
                               ? null
-                              : () => _openCategorySheet(state),
+                              : () =>
+                                    _openCategorySheet(state, categoryOptions),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -374,15 +392,16 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
                           iconColor: context.colors.pastelIndigoOn,
                           label: 'Ví',
                           value: selectedWallet?.name ?? 'Chưa có ví',
-                          onTap: state.isSaving ||
+                          onTap:
+                              state.isSaving ||
                                   selectedWallet == null ||
                                   wallets.isEmpty
                               ? null
                               : () => _openWalletSheet(
-                                    wallets,
-                                    selectedWallet,
-                                    accent,
-                                  ),
+                                  wallets,
+                                  selectedWallet,
+                                  accent,
+                                ),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(

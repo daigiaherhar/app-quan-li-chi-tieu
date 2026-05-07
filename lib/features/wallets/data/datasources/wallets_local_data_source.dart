@@ -21,20 +21,17 @@ class WalletsLocalDataSourceImpl implements WalletsLocalDataSource {
       ..where((table) => table.deletedAt.isNull())
       ..where((table) => table.isActive.equals(1))
       ..orderBy([
-        (table) => OrderingTerm(
-              expression: table.isDefault,
-              mode: OrderingMode.desc,
-            ),
-        (table) => OrderingTerm(
-              expression: table.createdAt,
-              mode: OrderingMode.desc,
-            ),
+        (table) =>
+            OrderingTerm(expression: table.isDefault, mode: OrderingMode.desc),
+        (table) =>
+            OrderingTerm(expression: table.createdAt, mode: OrderingMode.desc),
       ]);
+
     return query.watch().map(
-          (List<Wallet> rows) => rows
-              .map((Wallet row) => WalletModel.fromDrift(row))
-              .toList(growable: false),
-        );
+      (List<Wallet> rows) => rows
+          .map((Wallet row) => WalletModel.fromDrift(row))
+          .toList(growable: false),
+    );
   }
 
   @override
@@ -45,9 +42,9 @@ class WalletsLocalDataSourceImpl implements WalletsLocalDataSource {
   @override
   Future<void> softDeleteWallet(String walletId) async {
     final String nowIsoUtc = DateTime.now().toUtc().toIso8601String();
-    await (_database.update(_database.wallets)
-          ..where((table) => table.id.equals(walletId)))
-        .write(
+    await (_database.update(
+      _database.wallets,
+    )..where((table) => table.id.equals(walletId))).write(
       WalletsCompanion(
         deletedAt: Value<String?>(nowIsoUtc),
         updatedAt: Value<String>(nowIsoUtc),

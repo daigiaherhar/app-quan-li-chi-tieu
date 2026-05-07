@@ -7,3 +7,11 @@ abstract class BaseUseCase<Params, T> {
 abstract class BaseUseCaseNoParams<T> {
   Future<Result<T>> call();
 }
+
+abstract class BaseStreamUseCase<Params, T> {
+  Stream<T> call(Params params);
+}
+
+abstract class BaseStreamUseCaseNoParams<T> {
+  Stream<T> call();
+}

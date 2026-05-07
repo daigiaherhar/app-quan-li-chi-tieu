@@ -71,15 +71,18 @@ Future<T?> showLabeledOptionPickerSheet<T>({
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: <Color>[
-                              sheetContext.colors.textSecondary
-                                  .withValues(alpha: 0.14),
-                              sheetContext.colors.textSecondary
-                                  .withValues(alpha: 0.26),
+                              sheetContext.colors.textSecondary.withValues(
+                                alpha: 0.14,
+                              ),
+                              sheetContext.colors.textSecondary.withValues(
+                                alpha: 0.26,
+                              ),
                             ],
                           ),
                           border: Border.all(
-                            color: sheetContext.colors.white
-                                .withValues(alpha: 0.65),
+                            color: sheetContext.colors.white.withValues(
+                              alpha: 0.65,
+                            ),
                             width: 0.8,
                           ),
                           boxShadow: <BoxShadow>[
@@ -166,14 +169,17 @@ class _LabeledOptionPickerList<T> extends StatefulWidget {
       _LabeledOptionPickerListState<T>();
 }
 
-class _LabeledOptionPickerListState<T> extends State<_LabeledOptionPickerList<T>> {
+class _LabeledOptionPickerListState<T>
+    extends State<_LabeledOptionPickerList<T>> {
   final GlobalKey _selectedRowKey = GlobalKey();
   int _scrollAttempts = 0;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollSelectedIntoView());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _scrollSelectedIntoView(),
+    );
   }
 
   void _scrollSelectedIntoView() {
@@ -190,8 +196,9 @@ class _LabeledOptionPickerListState<T> extends State<_LabeledOptionPickerList<T>
     }
     if (_scrollAttempts < 5) {
       _scrollAttempts++;
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => _scrollSelectedIntoView());
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _scrollSelectedIntoView(),
+      );
     }
   }
 
@@ -201,6 +208,7 @@ class _LabeledOptionPickerListState<T> extends State<_LabeledOptionPickerList<T>
     return ListView.separated(
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
+      // reverse: true,
       padding: EdgeInsets.fromLTRB(
         20.w(sheetContext),
         14.w(sheetContext),
@@ -218,10 +226,7 @@ class _LabeledOptionPickerListState<T> extends State<_LabeledOptionPickerList<T>
           color: Colors.transparent,
           borderRadius: sheetContext.sizes.r16,
           child: InkWell(
-            onTap: () => Navigator.pop(
-              sheetContext,
-              item,
-            ),
+            onTap: () => Navigator.pop(sheetContext, item),
             borderRadius: sheetContext.sizes.r16,
             splashColor: widget.accentColor.withValues(alpha: 0.12),
             highlightColor: widget.accentColor.withValues(alpha: 0.06),
@@ -270,8 +275,9 @@ class _LabeledOptionPickerListState<T> extends State<_LabeledOptionPickerList<T>
                         border: Border.all(
                           color: isSelected
                               ? widget.accentColor.withValues(alpha: 0.35)
-                              : sheetContext.colors.border
-                                  .withValues(alpha: 0.2),
+                              : sheetContext.colors.border.withValues(
+                                  alpha: 0.2,
+                                ),
                         ),
                       ),
                       child: Icon(
@@ -288,8 +294,9 @@ class _LabeledOptionPickerListState<T> extends State<_LabeledOptionPickerList<T>
                         widget.labelOf(item),
                         style: sheetContext.textStyles.bodyLarge.copyWith(
                           color: sheetContext.colors.textPrimary,
-                          fontWeight:
-                              isSelected ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight: isSelected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                           height: 1.25,
                         ),
                       ),
@@ -310,8 +317,9 @@ class _LabeledOptionPickerListState<T> extends State<_LabeledOptionPickerList<T>
                     else
                       Icon(
                         Icons.chevron_right_rounded,
-                        color: sheetContext.colors.textSecondary
-                            .withValues(alpha: 0.35),
+                        color: sheetContext.colors.textSecondary.withValues(
+                          alpha: 0.35,
+                        ),
                         size: sheetContext.sizes.i24,
                       ),
                   ],

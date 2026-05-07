@@ -11,4 +11,13 @@ class TransactionCategoryEntity {
   final String id;
   final String label;
   final IconData icon;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is TransactionCategoryEntity && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

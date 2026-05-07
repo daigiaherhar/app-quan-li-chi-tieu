@@ -5,8 +5,11 @@ class Transactions extends Table {
   TextColumn get type => text()();
   TextColumn get walletId => text().references(Wallets, #id)();
   TextColumn get toWalletId => text().nullable().references(Wallets, #id)();
-  TextColumn get categoryId =>
-      text().nullable().references(Categories, #id, onDelete: KeyAction.setNull)();
+  TextColumn get categoryId => text().nullable().references(
+    CategoriesTransaction,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
   IntColumn get amount => integer()();
   IntColumn get feeAmount => integer().withDefault(const Constant<int>(0))();
   TextColumn get currencyCode =>

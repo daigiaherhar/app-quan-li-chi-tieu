@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:quan_ly_chi_tieu/core/constants/constants.dart';
 import 'package:quan_ly_chi_tieu/core/router/app_route_paths.dart';
 import 'package:quan_ly_chi_tieu/core/entities/transaction.dart';
 import 'package:quan_ly_chi_tieu/core/utils/app_locale_format.dart';
 import 'package:quan_ly_chi_tieu/core/utils/size_utils.dart';
 import 'package:quan_ly_chi_tieu/features/dashboard/presentation/providers/dashboard_providers.dart';
+import 'package:quan_ly_chi_tieu/generated/assets.dart';
 part '../widgets/header/header.dart';
 part '../widgets/body/body.dart';
 part '../widgets/body/quick_actions.dart';
@@ -24,6 +27,7 @@ class DashboardPage extends ConsumerWidget {
     final AsyncValue<List<TransactionEntity>> transactionsAsync = ref.watch(
       dashboardTransactionsProvider,
     );
+
     final AsyncValue<double> walletTotalAsync = ref.watch(
       dashboardWalletTotalProvider,
     );
@@ -40,10 +44,14 @@ class DashboardPage extends ConsumerWidget {
         child: transactionsAsync.when(
           data: (List<TransactionEntity> items) =>
               _DashboardBody(items: items, walletTotal: walletTotal),
-          error: (_, __) =>
-              _DashboardBody(items: const <TransactionEntity>[], walletTotal: walletTotal),
-          loading: () =>
-              _DashboardBody(items: const <TransactionEntity>[], walletTotal: walletTotal),
+          error: (_, __) => _DashboardBody(
+            items: const <TransactionEntity>[],
+            walletTotal: walletTotal,
+          ),
+          loading: () => _DashboardBody(
+            items: const <TransactionEntity>[],
+            walletTotal: walletTotal,
+          ),
         ),
       ),
     );

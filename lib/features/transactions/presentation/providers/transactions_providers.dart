@@ -10,47 +10,47 @@ import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/tr
 import 'package:quan_ly_chi_tieu/features/wallets/domain/entities/wallet_entity.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/presentation/providers/wallets_providers.dart';
 
-final Provider<TransactionsLocalDataSource> transactionsLocalDataSourceProvider =
-    Provider<TransactionsLocalDataSource>((Ref ref) {
+final Provider<TransactionsLocalDataSource>
+transactionsLocalDataSourceProvider = Provider<TransactionsLocalDataSource>((
+  Ref ref,
+) {
   return TransactionsLocalDataSourceImpl(ref.watch(appDatabaseProvider));
 });
 
 final Provider<TransactionsRepository> transactionsRepositoryProvider =
     Provider<TransactionsRepository>((Ref ref) {
-  return TransactionsRepositoryImpl(
-    ref.watch(transactionsLocalDataSourceProvider),
-  );
-});
+      return TransactionsRepositoryImpl(
+        ref.watch(transactionsLocalDataSourceProvider),
+      );
+    });
 
 final Provider<SaveTransactionUseCase> saveTransactionUseCaseProvider =
     Provider<SaveTransactionUseCase>((Ref ref) {
-  return SaveTransactionUseCase(ref.watch(transactionsRepositoryProvider));
-});
+      return SaveTransactionUseCase(ref.watch(transactionsRepositoryProvider));
+    });
 
 /// Wallet picker options for the transaction form.
 ///
 /// Reuses the wallets feature's read use-case so the transactions feature does
 /// not duplicate the wallet query and stays free of any Drift dependency.
 final StreamProvider<List<TransactionWalletEntity>>
-    transactionWalletOptionsProvider =
+transactionWalletOptionsProvider =
     StreamProvider<List<TransactionWalletEntity>>((Ref ref) {
-  return ref.watch(watchActiveWalletsUseCaseProvider).call().map(
-    (List<WalletEntity> wallets) {
-      final List<TransactionWalletEntity> mapped = wallets
-          .map(
-            (WalletEntity wallet) => TransactionWalletEntity(
-              id: wallet.id,
-              name: wallet.name,
-            ),
-          )
-          .toList();
-      mapped.sort((a, b) => a.name.compareTo(b.name));
-      return mapped;
-    },
-  );
-});
+      return ref.watch(watchActiveWalletsUseCaseProvider).call().map((
+        List<WalletEntity> wallets,
+      ) {
+        final List<TransactionWalletEntity> mapped = wallets
+            .map(
+              (WalletEntity wallet) =>
+                  TransactionWalletEntity(id: wallet.id, name: wallet.name),
+            )
+            .toList();
 
-final transactionProvider = NotifierProvider.autoDispose.family<
-    TransactionNotifier,
-    TransactionState,
-    TransactionFlowKind>(TransactionNotifier.new);
+        return mapped;
+      });
+    });
+
+final transactionProvider = NotifierProvider.autoDispose
+    .family<TransactionNotifier, TransactionState, TransactionFlowKind>(
+      TransactionNotifier.new,
+    );

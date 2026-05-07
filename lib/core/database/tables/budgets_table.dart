@@ -4,8 +4,11 @@ class Budgets extends Table {
   TextColumn get id => text()();
   TextColumn get name => text()();
   TextColumn get scopeType => text()();
-  TextColumn get categoryId =>
-      text().nullable().references(Categories, #id, onDelete: KeyAction.setNull)();
+  TextColumn get categoryId => text().nullable().references(
+    CategoriesTransaction,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
   TextColumn get walletId =>
       text().nullable().references(Wallets, #id, onDelete: KeyAction.setNull)();
   IntColumn get limitAmount => integer()();

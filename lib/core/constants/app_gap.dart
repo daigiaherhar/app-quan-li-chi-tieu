@@ -19,6 +19,7 @@ class AppGapScheme {
   Widget get h2 => SizedBox(height: AppSizesStatic.s2.w(context));
   Widget get h4 => SizedBox(height: AppSizesStatic.s4.w(context));
   Widget get h8 => SizedBox(height: AppSizesStatic.s8.w(context));
+  Widget get h10 => SizedBox(height: AppSizesStatic.s10.w(context));
   Widget get h12 => SizedBox(height: AppSizesStatic.s12.w(context));
   Widget get h16 => SizedBox(height: AppSizesStatic.s16.w(context));
   Widget get h20 => SizedBox(height: AppSizesStatic.s20.w(context));

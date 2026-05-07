@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quan_ly_chi_tieu/core/models/transaction_category_entity.dart';
+import 'package:quan_ly_chi_tieu/features/categories_transaction/presentation/models/transaction_category_entity.dart';
 
 /// Distinguishes income vs expense flows — shared UI, different accent colors.
 enum TransactionFlowKind { income, expense }

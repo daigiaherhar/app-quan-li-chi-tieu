@@ -46,7 +46,7 @@
 		</data>
 		<key>Frameworks/App.framework/App</key>
 		<data>
-		2qQUA7qC9irXzWxguH1WyiRNP1Q=
+		9fUM2jHj4NORdz1v7s07npEfds8=
 		</data>
 		<key>Frameworks/App.framework/Info.plist</key>
 		<data>
@@ -54,11 +54,11 @@
 		</data>
 		<key>Frameworks/App.framework/_CodeSignature/CodeResources</key>
 		<data>
-		o6Leph8hLmw6RqjCUq630l/Atlg=
+		eifqrznZ7yjj9kiy3lIouN7jwHM=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.bin</key>
 		<data>
-		/8KAsqVW7cjYdg8biPh4zfoQSkY=
+		+wo1P0/z0QLL1Iqakgy+/Gu8oLY=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/FontManifest.json</key>
 		<data>
@@ -84,6 +84,10 @@
 		<data>
 		5z9mf1oiKnYDRgoobyFH1n8znOs=
 		</data>
+		<key>Frameworks/App.framework/flutter_assets/assets/asset_lottie/down-arrow.json</key>
+		<data>
+		AGy4DjDdTlD2Y60AvcsBZYHiJmw=
+		</data>
 		<key>Frameworks/App.framework/flutter_assets/assets/asset_lottie/lost_pig.json</key>
 		<data>
 		HTMcBdxisyON9vtlN6QTQsrSoaI=
@@ -96,6 +100,10 @@
 		<data>
 		YRRTAUR3LexA+8TVrEEMNSr91S0=
 		</data>
+		<key>Frameworks/App.framework/flutter_assets/assets/asset_lottie/up-arrow.json</key>
+		<data>
+		I4D7LleN6ns3d8DdmKmYZlpilEA=
+		</data>
 		<key>Frameworks/App.framework/flutter_assets/fonts/MaterialIcons-Regular.otf</key>
 		<data>
 		/CUoTuPQqqdexfyOT9lpJhV+2MQ=
@@ -106,7 +114,7 @@
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/kernel_blob.bin</key>
 		<data>
-		Yx2cRFT23/hp9e4YH+O6GseqHuw=
+		baeoWv5czUHoAWsyaIY3lLMm9kA=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
 		<data>
@@ -238,7 +246,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		5R0Otf/NV7/urYJSRae4y8dvnZo=
+		qJJU9iqTFf2BzctySSGng7XPdsQ=
 		</data>
 		<key>PkgInfo</key>
 		<data>
@@ -329,7 +337,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			pwiij/iiQqTP6rHvnrpoA/wCkPezwKEa2yvs8VPBWXg=
+			HNDxucV2CbGgD5NcozWhlaQWT97cH5rNyUKhGvkoDuk=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/Info.plist</key>
@@ -343,14 +351,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			N0njFVKma3gQr4GpWXRtrPt0gCp+Q2N7MYPNZeogcdw=
+			yGZXOo8tiKM5Y2x6A3Js6t2Kv9RxkYvY5B3xr7mAJxs=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.bin</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			o0Vaxi9zW/JdVFanwgKTaw+S22XPYCp7wb/LWCAETzs=
+			BFKlYS4JMZ/hfsX6g3/NkXSu2X2E3zhldYIHU2gu5BY=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/FontManifest.json</key>
@@ -395,6 +403,13 @@
 			y9e3yPASn99nODeRWP81OBFsWsueAsCGP4H6NvCBxRo=
 			</data>
 		</dict>
+		<key>Frameworks/App.framework/flutter_assets/assets/asset_lottie/down-arrow.json</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Ix94f5jABKdm/f+BFFYUGGJ5pkC8Z59lCpdSSOwupGw=
+			</data>
+		</dict>
 		<key>Frameworks/App.framework/flutter_assets/assets/asset_lottie/lost_pig.json</key>
 		<dict>
 			<key>hash2</key>
@@ -416,6 +431,13 @@
 			hg/56sWwyGnYzZWkHbPagiMEYttg8pDOzsjqIfihY9c=
 			</data>
 		</dict>
+		<key>Frameworks/App.framework/flutter_assets/assets/asset_lottie/up-arrow.json</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			73sFimUnygPGVeYKoyoN8VrI43aTFmYeZePpCP6jY0k=
+			</data>
+		</dict>
 		<key>Frameworks/App.framework/flutter_assets/fonts/MaterialIcons-Regular.otf</key>
 		<dict>
 			<key>hash2</key>
@@ -434,7 +456,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Misy7iX5XXyW775BlQ5L7n7fvHPptqo7JtFAhUBDyx4=
+			YulJ4BBhlIMDe594NCxxpmH+8Fhdzd48rt6mxnxN85Y=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>

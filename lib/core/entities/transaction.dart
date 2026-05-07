@@ -1,8 +1,4 @@
-enum TransactionType {
-  income,
-  expense,
-  transfer,
-}
+enum TransactionType { income, expense, transfer }
 
 class TransactionEntity {
   const TransactionEntity({
@@ -10,6 +6,7 @@ class TransactionEntity {
     required this.type,
     required this.amount,
     required this.happenedAt,
+    this.nameCategory,
     this.note,
     this.categoryId,
     this.walletId = 'default',
@@ -22,6 +19,7 @@ class TransactionEntity {
   final String? note;
   final String? categoryId;
   final String walletId;
+  final String? nameCategory;
 
   bool get isExpense => type == TransactionType.expense;
   bool get isIncome => type == TransactionType.income;
