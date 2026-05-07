@@ -2,8 +2,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:quan_ly_chi_tieu/core/constants/constants.dart';
+import 'package:quan_ly_chi_tieu/core/router/app_route_paths.dart';
 import 'package:quan_ly_chi_tieu/core/utils/size_utils.dart';
+import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transaction_state.dart';
+import 'package:quan_ly_chi_tieu/generated/assets.dart';
 import 'package:quan_ly_chi_tieu/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:quan_ly_chi_tieu/features/ledger/presentation/pages/ledger_page.dart';
 import 'package:quan_ly_chi_tieu/features/profile/presentation/pages/profile_page.dart';

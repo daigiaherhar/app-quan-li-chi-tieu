@@ -25,11 +25,12 @@ class AppSizeScheme {
   double get s32 => AppSizesStatic.s32.w(context);
 
   // --- Radius ---
-  double get r4 => AppSizesStatic.r4;
-  double get r8 => AppSizesStatic.r8;
-  double get r12 => AppSizesStatic.r12;
-  double get r16 => AppSizesStatic.r16;
-  double get rCircle => AppSizesStatic.rCircle;
+  BorderRadius get r4 => BorderRadius.circular(AppSizesStatic.r4);
+  BorderRadius get r8 => BorderRadius.circular(AppSizesStatic.r8);
+  BorderRadius get r12 => BorderRadius.circular(AppSizesStatic.r12);
+  BorderRadius get r14 => BorderRadius.circular(AppSizesStatic.r14);
+  BorderRadius get r16 => BorderRadius.circular(AppSizesStatic.r16);
+  BorderRadius get rCircle => BorderRadius.circular(AppSizesStatic.rCircle);
 
   // --- Icons ---
   double get i16 => AppSizesStatic.i16.w(context);
@@ -51,6 +52,7 @@ class AppSizesStatic {
   static const double r4 = 4.0;
   static const double r8 = 8.0;
   static const double r12 = 12.0;
+  static const double r14 = 14.0;
   static const double r16 = 16.0;
   static const double r24 = 24.0;
   static const double rCircle = 99.0;

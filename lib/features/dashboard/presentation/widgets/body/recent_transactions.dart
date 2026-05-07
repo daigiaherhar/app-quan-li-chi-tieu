@@ -102,7 +102,7 @@ class _RecentTransactionTile extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
             color: background,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: context.sizes.r14,
           ),
           child: Icon(icon, color: color, size: 22),
         ),
@@ -133,7 +133,7 @@ class _RecentTransactionTile extends StatelessWidget {
           ),
         ),
         Text(
-          _formatSignedCurrency(transaction.amount, isExpense: isExpense),
+          formatSignedVndCurrency(transaction.amount, isExpense: isExpense),
           style: context.textStyles.bodyMedium.copyWith(
             color: color,
             fontWeight: FontWeight.w800,

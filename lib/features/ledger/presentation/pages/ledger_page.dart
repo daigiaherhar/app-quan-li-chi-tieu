@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:quan_ly_chi_tieu/core/constants/constants.dart';
 import 'package:quan_ly_chi_tieu/core/demo/demo_data.dart';
 import 'package:quan_ly_chi_tieu/core/entities/transaction.dart';
+import 'package:quan_ly_chi_tieu/core/utils/app_locale_format.dart';
 import 'package:quan_ly_chi_tieu/core/utils/size_utils.dart';
 
 part '../widgets/header/ledger_header.dart';
@@ -17,12 +18,6 @@ class LedgerPage extends StatefulWidget {
   const LedgerPage({
     super.key,
   });
-
-  static final NumberFormat currency = NumberFormat.currency(
-    locale: 'vi_VN',
-    symbol: '₫',
-    decimalDigits: 0,
-  );
 
   @override
   State<LedgerPage> createState() => _LedgerPageState();

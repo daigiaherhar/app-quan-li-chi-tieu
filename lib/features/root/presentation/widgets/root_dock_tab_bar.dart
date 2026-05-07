@@ -1,10 +1,8 @@
-import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quan_ly_chi_tieu/core/constants/constants.dart';
-import 'package:quan_ly_chi_tieu/core/extension/context_ext.dart';
 import 'package:quan_ly_chi_tieu/core/utils/size_utils.dart';
 import 'package:quan_ly_chi_tieu/features/root/presentation/widgets/root_tab_bar_painter.dart';
 import 'package:quan_ly_chi_tieu/shared/widgets/widgets.dart';
@@ -34,7 +32,7 @@ class RootDockTabBar extends StatelessWidget {
     // Giảm nhẹ thông số để trông thanh thoát hơn
     final double barHeight = 84.w(context);
     final double paintHeight = 64.w(context);
-    
+
     return Container(
       height: barHeight,
       width: double.infinity,
@@ -109,7 +107,9 @@ class RootDockTabBar extends StatelessWidget {
               child: LiquidCenterButton(
                 onPressed: onCenterPressed,
                 isOpen: isCenterOpen,
-                size: 58.w(context), // Scale nhẹ theo màn hình nhưng không quá to
+                size: 58.w(
+                  context,
+                ), // Scale nhẹ theo màn hình nhưng không quá to
               ),
             ),
           ),

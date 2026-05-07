@@ -1,0 +1,55 @@
+---
+description: Quy ước Riverpod Provider direction cho presentation layer (state/notifier/providers + UI listener pattern)
+globs: lib/features/**/presentation/providers/**/*.dart,lib/features/**/presentation/widgets/**/*.dart,lib/features/**/presentation/pages/**/*.dart
+alwaysApply: false
+---
+
+# Riverpod Provider Direction
+
+Áp dụng khi làm việc với Provider trong presentation layer.
+
+## 1) Tách file bắt buộc
+
+- `*_state.dart`: chỉ chứa state model (immutable), enum trạng thái, `copyWith`.
+- `*_notifier.dart`: chỉ chứa logic cập nhật state, validate, submit/load.
+- `*_providers.dart`: chỉ khai báo provider (và derived providers nếu cần).
+
+## 2) Trách nhiệm rõ ràng
+
+- **State**:
+  - Immutable.
+  - Có `copyWith`.
+  - Không chứa side-effect (`Navigator`, `SnackBar`, gọi API trực tiếp).
+- **Notifier**:
+  - Chứa logic nghiệp vụ presentation (validate, transform, state transition).
+  - Không dùng `BuildContext`.
+  - Không gọi `Navigator`, `SnackBar`, `showDialog`.
+- **Providers**:
+  - Provider family khi màn cần phân nhánh theo kind/id.
+  - Tên ngắn gọn, đúng domain của feature.
+
+## 3) Pattern trong UI
+
+- UI dùng:
+  - `ref.watch(provider)` để render state.
+  - `ref.read(provider.notifier)` để gọi action.
+  - `ref.listen(provider, ...)` cho side-effect.
+- Side-effect (`SnackBar`, `context.pop`, navigation) đặt ở UI layer.
+- Không viết business logic trong widget `build`.
+
+## 4) Quy tắc state transition
+
+- Có trạng thái rõ: loading/submitting, success, error (nếu flow cần).
+- Không reset lỗi ngoài ý muốn khi update field khác.
+- Clear error/status phải tường minh (qua method hoặc flag rõ nghĩa).
+
+## 5) Import direction
+
+- `widgets/pages` import `providers`.
+- `providers` không import UI widgets/pages.
+- Tránh circular import giữa `*_notifier.dart` và `*_providers.dart`.
+
+## 6) Naming convention
+
+- `TransactionState`, `TransactionNotifier`, `transactionProvider`.
+- Enum/field đặt tên theo domain, tránh mơ hồ (`kind`, `submitStatus`, `amountError`).

@@ -8,9 +8,7 @@ part '../widgets/body/profile_body.dart';
 
 /// Tab 3 — Cá nhân (feature `profile` + UI demo).
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({
-    super.key,
-  });
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +20,7 @@ class ProfilePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             _ProfileHeader(),
-            Expanded(
-              child: _ProfileBody(),
-            ),
+            Expanded(child: _ProfileBody()),
           ],
         ),
       ),

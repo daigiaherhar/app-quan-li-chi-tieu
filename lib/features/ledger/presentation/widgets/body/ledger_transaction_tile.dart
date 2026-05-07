@@ -14,8 +14,10 @@ class _LedgerTransactionTile extends StatelessWidget {
     final IconData icon =
         isExpense ? Icons.arrow_outward_rounded : Icons.arrow_downward_rounded;
 
-    final String amountSign = isExpense ? '-' : '+';
-    final String amountText = '$amountSign${LedgerPage.currency.format(transaction.amount)}';
+    final String amountText = formatSignedVndCurrency(
+      transaction.amount,
+      isExpense: isExpense,
+    );
 
     return Container(
       margin: EdgeInsets.only(bottom: 12.w(context)),

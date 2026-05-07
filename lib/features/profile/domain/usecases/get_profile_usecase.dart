@@ -4,9 +4,7 @@ import 'package:quan_ly_chi_tieu/features/profile/domain/entities/profile_entity
 import 'package:quan_ly_chi_tieu/features/profile/domain/repositories/profile_repository.dart';
 
 class GetProfileUseCase extends BaseUseCaseNoParams<ProfileEntity> {
-  GetProfileUseCase(
-    this._repository,
-  );
+  GetProfileUseCase(this._repository);
 
   final ProfileRepository _repository;
 

@@ -1,12 +1,17 @@
 part of '../../pages/dashboard_page.dart';
 
 class _DashboardHeader extends StatelessWidget {
-  const _DashboardHeader();
+  const _DashboardHeader({required this.items, required this.walletTotal});
+
+  final List<TransactionEntity> items;
+  final double walletTotal;
 
   @override
   Widget build(BuildContext context) {
-    final List<TransactionEntity> items = kMockTransactions;
-    final _MonthlySummary summary = _MonthlySummary.fromTransactions(items);
+    final _MonthlySummary summary = _MonthlySummary.fromTransactions(
+      items,
+      walletTotal: walletTotal,
+    );
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -45,7 +50,7 @@ class _GreetingRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                '${_greetingText()}, Bạn ${_greetingEmoji()}',
+                '${timeOfDayGreetingVi()}, Bạn ${timeOfDayGreetingEmojiVi()}',
                 style: context.textStyles.h3.copyWith(
                   color: context.colors.textPrimary,
                   fontWeight: FontWeight.w800,
@@ -190,7 +195,7 @@ class _BalanceHeroCard extends StatelessWidget {
           ),
           context.gap.h8,
           Text(
-            _formatCurrency(summary.balance),
+            formatVndCurrency(summary.balance),
             style: context.textStyles.h1.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w800,
@@ -203,7 +208,7 @@ class _BalanceHeroCard extends StatelessWidget {
               Expanded(
                 child: _HeroStatTile(
                   label: 'Thu nhập',
-                  amount: _formatSignedCurrency(
+                  amount: formatSignedVndCurrency(
                     summary.income,
                     isExpense: false,
                   ),
@@ -215,7 +220,7 @@ class _BalanceHeroCard extends StatelessWidget {
               Expanded(
                 child: _HeroStatTile(
                   label: 'Chi tiêu',
-                  amount: _formatSignedCurrency(
+                  amount: formatSignedVndCurrency(
                     summary.expense,
                     isExpense: true,
                   ),
@@ -298,9 +303,16 @@ class _HeroStatTile extends StatelessWidget {
 }
 
 class _MonthlySummary {
-  const _MonthlySummary({required this.income, required this.expense});
+  const _MonthlySummary({
+    required this.income,
+    required this.expense,
+    required this.walletTotal,
+  });
 
-  factory _MonthlySummary.fromTransactions(List<TransactionEntity> items) {
+  factory _MonthlySummary.fromTransactions(
+    List<TransactionEntity> items, {
+    required double walletTotal,
+  }) {
     final DateTime now = DateTime.now();
     double income = 0;
     double expense = 0;
@@ -314,11 +326,16 @@ class _MonthlySummary {
         expense += tx.amount;
       }
     }
-    return _MonthlySummary(income: income, expense: expense);
+    return _MonthlySummary(
+      income: income,
+      expense: expense,
+      walletTotal: walletTotal,
+    );
   }
 
   final double income;
   final double expense;
+  final double walletTotal;
 
-  double get balance => income - expense;
+  double get balance => walletTotal;
 }

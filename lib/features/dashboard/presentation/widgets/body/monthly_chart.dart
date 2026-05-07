@@ -53,7 +53,7 @@ class _MonthlyChartCardState extends State<_MonthlyChartCard> {
   Widget build(BuildContext context) {
     final List<_WeeklyBucket> buckets = _buildBuckets();
     final bool hasData = buckets.any((_WeeklyBucket b) => b.total > 0);
-    final String monthLabel = _formatMonthLabel(_anchor);
+    final String monthLabel = formatMonthYearVi(_anchor);
 
     return _SurfaceCard(
       child: Column(

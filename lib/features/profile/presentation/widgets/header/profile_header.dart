@@ -6,7 +6,12 @@ class _ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.w(context), 8.w(context), 16.w(context), 16.w(context)),
+      padding: EdgeInsets.fromLTRB(
+        16.w(context),
+        8.w(context),
+        16.w(context),
+        16.w(context),
+      ),
       child: Column(
         children: [
           Row(
@@ -34,7 +39,9 @@ class _ProfileHeader extends StatelessWidget {
                 ),
                 child: CircleAvatar(
                   radius: 32,
-                  backgroundColor: context.colors.primary.withValues(alpha: 0.15),
+                  backgroundColor: context.colors.primary.withValues(
+                    alpha: 0.15,
+                  ),
                   child: Icon(
                     Icons.person_rounded,
                     size: 36,

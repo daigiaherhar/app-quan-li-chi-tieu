@@ -13,7 +13,7 @@ class _QuickActionsRow extends StatelessWidget {
           label: 'Ví',
           background: context.colors.pastelIndigo,
           foreground: context.colors.pastelIndigoOn,
-          onTap: () {},
+          onTap: () => context.push(AppRoutePaths.wallets),
         ),
         _QuickActionItem(
           icon: Icons.bar_chart_rounded,

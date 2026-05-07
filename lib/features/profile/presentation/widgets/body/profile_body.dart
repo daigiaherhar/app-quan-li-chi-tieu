@@ -58,10 +58,7 @@ class _ProfileMoreTile extends StatelessWidget {
             padding: context.padding.all16,
             child: Row(
               children: <Widget>[
-                Icon(
-                  icon,
-                  color: context.colors.primary,
-                ),
+                Icon(icon, color: context.colors.primary),
                 context.gap.w12,
                 Expanded(
                   child: Column(
@@ -74,10 +71,7 @@ class _ProfileMoreTile extends StatelessWidget {
                         ),
                       ),
                       context.gap.h4,
-                      Text(
-                        subtitle,
-                        style: context.textStyles.bodySmall,
-                      ),
+                      Text(subtitle, style: context.textStyles.bodySmall),
                     ],
                   ),
                 ),

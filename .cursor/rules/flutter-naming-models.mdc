@@ -1,0 +1,22 @@
+---
+description: 
+globs: lib/core/models/**/*.dart, lib/shared/**/*.dart
+alwaysApply: false
+---
+
+# Đặt tên model & kết quả UI (picker / sheet)
+
+## Vị trí file
+
+- Model dùng chung: `lib/core/models/`, tên file `snake_case.dart`. Ưu tiên **trùng với class chính** trong file (ví dụ `category_transaction_model.dart` ↔ `CategoryTransactionModel`).
+- Enum mock cho thu/chi (ví dụ `IncomeCategory`): có thể gom trong `lib/core/models/category_transaction_model.dart` cùng `CategoryTransactionModel`, hoặc tạm đặt mock ngay page/presentation; khi có nguồn dữ liệu thật thì chuyển sang layer data/domain tương ứng.
+
+## Kết quả chọn hạng mục / option có nhãn + icon (giao dịch)
+
+- **File + class:** `category_transaction_model.dart` / `CategoryTransactionModel<T>` cho kết quả sheet chọn category (thu/chi) kèm UI.
+- **Không** đặt tên kiểu `*Pick`, `*Picked` cho type công khai.
+- **Thuộc tính:** `category` (giá trị enum/domain), `label` (chuỗi hiển thị, thống nhất với `labelOf`), `icon` (`IconData`). **Không** dùng `name` cho nhãn UI generic.
+
+## Sheet / dialog
+
+- Hàm `show…` có thể giữ prefix `show`; kiểu trả về dùng model ở `core/models`, không nhúng class chỉ dùng cho một màn trong thư mục `shared/dialogs`.

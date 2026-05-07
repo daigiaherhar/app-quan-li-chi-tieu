@@ -32,21 +32,29 @@ class _QuickActionPopup extends StatelessWidget {
               children: [
                 _QuickActionPopupItem(
                   label: 'Chi tiêu',
-                  icon: Icons.north_east_rounded,
+                  svgAssetPath: Assets.assetIcons.iconChi,
                   color: context.colors.expense,
+                  backgroundColor: context.colors.expenseSurface,
                   onTap: () {
                     onClose();
-                    // TODO: Navigate to Add Expense
+                    context.push(
+                      AppRoutePaths.transaction,
+                      extra: TransactionFlowKind.expense,
+                    );
                   },
                 ).animate().scale(delay: 50.ms, curve: Curves.easeOutBack),
                 contextGap.w32,
                 _QuickActionPopupItem(
                   label: 'Thu nhập',
-                  icon: Icons.south_west_rounded,
+                  svgAssetPath: Assets.assetIcons.iconThu,
                   color: context.colors.income,
+                  backgroundColor: context.colors.incomeSurface,
                   onTap: () {
                     onClose();
-                    // TODO: Navigate to Add Income
+                    context.push(
+                      AppRoutePaths.transaction,
+                      extra: TransactionFlowKind.income,
+                    );
                   },
                 ).animate().scale(delay: 150.ms, curve: Curves.easeOutBack),
               ],
@@ -59,16 +67,20 @@ class _QuickActionPopup extends StatelessWidget {
 }
 
 class _QuickActionPopupItem extends StatelessWidget {
-  const _QuickActionPopupItem({
+  // Asset paths come from generated Assets (not const expressions).
+  // ignore: prefer_const_constructors_in_immutables
+  _QuickActionPopupItem({
     required this.label,
-    required this.icon,
+    required this.svgAssetPath,
     required this.color,
+    this.backgroundColor,
     required this.onTap,
   });
 
   final String label;
-  final IconData icon;
+  final String svgAssetPath;
   final Color color;
+  final Color? backgroundColor;
   final VoidCallback onTap;
 
   @override
@@ -85,17 +97,30 @@ class _QuickActionPopupItem extends StatelessWidget {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
+                color: backgroundColor ?? context.colors.white,
+
+                borderRadius: context.sizes.r14,
                 boxShadow: [
                   BoxShadow(
-                    color: color.withValues(alpha: 0.3),
+                    color: color.withValues(alpha: 0.35),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
                 ],
               ),
-              child: Icon(icon, color: Colors.white, size: 28),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.asset(
+                  svgAssetPath,
+                  width: 34,
+                  height: 34,
+                  // colorFilter: const ColorFilter.mode(
+                  //   Colors.white,
+                  //   BlendMode.srcIn,
+                  // ),
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
           ),
         ),
