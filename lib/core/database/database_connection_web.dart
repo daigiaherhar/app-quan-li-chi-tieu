@@ -1,8 +1,15 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:drift/drift.dart';
-import 'package:drift/web.dart';
+import 'package:drift/wasm.dart';
 
 QueryExecutor connect() {
-  return WebDatabase('quan_ly_chi_tieu');
+  return DatabaseConnection.delayed(
+    Future<DatabaseConnection>(() async {
+      final WasmDatabaseResult result = await WasmDatabase.open(
+        databaseName: 'quan_ly_chi_tieu',
+        sqlite3Uri: Uri.parse('sqlite3.wasm'),
+        driftWorkerUri: Uri.parse('drift_worker.js'),
+      );
+      return result.resolvedExecutor;
+    }),
+  );
 }

@@ -27,6 +27,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Generate code (drift / freezed / json / injectable / riverpod)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Generate asset bindings
+        run: dart run auto_gen_assets
+
       - name: Build Flutter Web
         run: flutter build web --base-href "/app-quan-li-chi-tieu/"
 

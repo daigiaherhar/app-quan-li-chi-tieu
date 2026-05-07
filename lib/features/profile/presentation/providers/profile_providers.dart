@@ -38,6 +38,7 @@ final FutureProvider<bool> hasUserInfoProvider = FutureProvider<bool>((
   Ref ref,
 ) async {
   final Result<bool> result = await ref.watch(hasUserInfoUseCaseProvider)();
+
   return result.when(
     onSuccess: (bool hasUserInfo) => hasUserInfo,
     onFailure: (String message, int statusCode, dynamic errorResponse) {

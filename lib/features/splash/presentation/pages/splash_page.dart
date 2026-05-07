@@ -36,10 +36,12 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       _isBusy = true;
     });
     try {
+      print("#43434");
       await Future.wait(<Future<void>>[
         ref.read(hasUserInfoProvider.future).then((_) {}),
         Future<void>.delayed(_minDisplay),
       ]);
+      print("#43434");
       if (!mounted) {
         return;
       }

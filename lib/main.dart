@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,6 +22,7 @@ class MyApp extends ConsumerWidget {
       child: MaterialApp.router(
         title: 'Quan Ly Chi Tieu',
         debugShowCheckedModeBanner: false,
+        scrollBehavior: const _AppScrollBehavior(),
         localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
@@ -39,4 +41,19 @@ class MyApp extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Allows scrolling by dragging with mouse / touch / trackpad on every
+/// platform — Flutter's default disables mouse drag on web/desktop.
+class _AppScrollBehavior extends MaterialScrollBehavior {
+  const _AppScrollBehavior();
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => <PointerDeviceKind>{
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.trackpad,
+    PointerDeviceKind.stylus,
+    PointerDeviceKind.invertedStylus,
+  };
 }

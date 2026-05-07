@@ -24,6 +24,7 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
     final UserProfile? profile = await (_database.select(
       _database.userProfiles,
     )..where((table) => table.id.equals(_profileId))).getSingleOrNull();
+
     if (profile != null) {
       return profile;
     }
@@ -33,6 +34,7 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
   @override
   Future<bool> hasUserInfo() async {
     final UserProfile profile = await getProfile();
+
     return profile.hasUserInfo;
   }
 
