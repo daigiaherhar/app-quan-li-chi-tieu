@@ -1,0 +1,96 @@
+---
+description: Cấm rò rỉ kiểu dữ liệu Drift (Wallet, Transaction, ...) ra layer presentation; mọi UI phải nhận entity của domain.
+globs: lib/features/**/presentation/**/*.dart
+alwaysApply: false
+---
+
+# No Drift types in presentation
+
+Drift sinh các class row (`Wallet`, `Transaction`, `Category`, ...) trong `lib/core/database/app_database.g.dart`. Đây là **data-layer model**, không được lộ ra `presentation/`.
+
+## 1) Quy tắc cứng
+
+- File trong `lib/features/**/presentation/**` **không** được:
+  - `import 'package:.../core/database/app_database.dart'` (trừ `show kXxx` cho hằng kind/type) để lấy class row Drift.
+  - Tham chiếu trực tiếp các kiểu Drift: `Wallet`, `Transaction`, `Category`, `Budget`, `UserProfile`, `AppSetting`, hoặc bất kỳ `XxxCompanion` nào.
+  - `import 'package:drift/drift.dart'` (kể cả `show Value`).
+  - Gọi `database.into(...).insert(...)` / `update` / `delete` / `customUpdate` trực tiếp.
+  - Đọc cờ 0/1 từ DB trong widget (vd `wallet.isDefault == 1`) — phải dùng `bool` của entity.
+- UI chỉ nhận `*Entity` (immutable, đúng kiểu UI cần) và gọi method của notifier/datasource.
+
+## 2) Cấu trúc khuyến nghị mỗi feature
+
+```
+lib/features/<feature>/
+├── domain/
+│   ├── entities/<feature>_entity.dart    // Immutable read model
+│   ├── repositories/<feature>_repository.dart   // abstract, trả Result<T> hoặc Stream
+│   └── usecases/                                 // 1 use case = 1 file
+├── data/
+│   ├── datasources/<feature>_local_data_source.dart   // Drift queries (read + write)
+│   ├── models/<feature>_model.dart       // class XxxDto (write) + extension on <DriftRow> { toEntity() }
+│   └── repositories/<feature>_repository_impl.dart    // wrap try/catch -> Result
+└── presentation/
+    └── providers/
+        ├── <feature>_providers.dart      // DI: datasource, repository, usecase, stream, notifier
+        ├── <feature>_state.dart          // immutable state + copyWith
+        └── <feature>_notifier.dart       // validate, submit -> gọi usecase
+```
+
+DataSource là điểm duy nhất chạm Drift trong feature. Nó nhận `XxxDraft` (domain) và trả `XxxEntity` (domain) — presentation không thấy `Wallet`, `WalletsCompanion`, `Value<>`.
+
+Provider chỉ pass-through:
+
+```dart
+final StreamProvider<List<WalletEntity>> walletsProvider =
+    StreamProvider<List<WalletEntity>>((Ref ref) {
+  return ref.watch(walletsLocalDataSourceProvider).watchActiveWallets();
+});
+```
+
+## 3) Naming
+
+- Entity: `<Feature>Entity` (ví dụ `WalletEntity`, không phải `Wallet`, `WalletModel`, `WalletData`).
+- File: `wallet_entity.dart`, đặt ở `domain/entities/`.
+- Model thống nhất: `class XxxModel` trong `data/models/<feature>_model.dart` chứa cả luồng đọc lẫn ghi:
+  - factory `XxxModel.fromDrift(<DriftRow>)` để map từ drift sang model.
+  - method `toCompanion()` để build `XxxCompanion` cho insert/update.
+  - extension `XxxModelToEntity on XxxModel { XxxEntity toEntity() }` để map ra domain entity.
+  - `id` để nullable; null nghĩa là “bản ghi mới”, `toCompanion()` tự sinh id.
+- Không tạo folder `data/mappers/` riêng. Datasource chỉ cần `WalletModel.fromDrift(row).toEntity()`.
+- Entity dùng chéo nhiều feature: cho phép đặt ở `lib/core/models/` (xem `transaction_wallet_entity.dart`) và **vẫn** áp dụng rule này.
+
+## 4) Bool, không 0/1
+
+Entity phải convert cờ DB sang `bool`:
+
+```dart
+// data/mappers/wallet_mapper.dart
+WalletEntity toEntity() => WalletEntity(
+  // ...
+  isDefault: isDefault == 1,
+);
+```
+
+Widget chỉ làm `if (wallet.isDefault) ...`.
+
+## 5) Khi entity được tham chiếu chéo feature
+
+Nếu `transactions` cần xem ví, **không** import `WalletEntity` của `features/wallets/domain/`. Tạo entity nhẹ riêng cho ngữ cảnh đó (xem `core/models/transaction_wallet_entity.dart`) hoặc đặt entity dùng chung trong `core/models/`. Mục tiêu: feature không phụ thuộc lẫn nhau qua `domain/`.
+
+## 6) Logic trong widget
+
+- Widget **không** chứa: validate form, parse số tiền, gen ID, gen timestamp, build companion, gọi DB, gọi API.
+- Widget chỉ: render từ state, đọc controller text rồi gọi method của notifier.
+- Trạng thái loading/submitting đọc từ state (vd `state.isSubmitting`), không dùng `setState` cờ riêng.
+- `Navigator.pop` / `SnackBar` đặt trong `ref.listen(provider, ...)` ở widget (rule provider direction đã cấm side-effect trong notifier).
+
+## 7) Checklist khi review/PR
+
+- [ ] `presentation/` không import `core/database/app_database.dart` (trừ `show kXxx` cho hằng).
+- [ ] `presentation/` không import `package:drift/drift.dart`.
+- [ ] Provider trả `List<XxxEntity>` / `XxxEntity?` — không trả Drift row hay companion.
+- [ ] UI không có biểu thức `... == 1` để diễn giải boolean.
+- [ ] Mapper extension nằm trong `data/models/<feature>_model.dart` (cùng file với DTO), không ở `presentation/`.
+- [ ] Mọi thao tác ghi DB được đóng gói trong `data/datasources/` hoặc `data/repositories/`.
+- [ ] Widget không gen ID / timestamp / companion.

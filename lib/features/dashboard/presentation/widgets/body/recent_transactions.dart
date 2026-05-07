@@ -133,7 +133,7 @@ class _RecentTransactionTile extends StatelessWidget {
           ),
         ),
         Text(
-          formatSignedVndCurrency(transaction.amount, isExpense: isExpense),
+          formatSignedAppCurrency(transaction.amount, isExpense: isExpense),
           style: context.textStyles.bodyMedium.copyWith(
             color: color,
             fontWeight: FontWeight.w800,

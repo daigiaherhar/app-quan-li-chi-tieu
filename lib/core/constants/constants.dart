@@ -1,3 +1,4 @@
+export 'app_currency.dart';
 export 'app_colors.dart';
 export 'form_text_limits.dart';
 export 'app_sizes.dart';

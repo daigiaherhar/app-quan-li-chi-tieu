@@ -1,22 +1,38 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quan_ly_chi_tieu/core/database/app_database.dart';
 import 'package:quan_ly_chi_tieu/core/database/database_providers.dart';
+import 'package:quan_ly_chi_tieu/features/wallets/data/datasources/wallets_local_data_source.dart';
+import 'package:quan_ly_chi_tieu/features/wallets/data/repositories/wallets_repository_impl.dart';
+import 'package:quan_ly_chi_tieu/features/wallets/domain/entities/wallet_entity.dart';
+import 'package:quan_ly_chi_tieu/features/wallets/domain/repositories/wallets_repository.dart';
+import 'package:quan_ly_chi_tieu/features/wallets/domain/usecases/create_wallet_usecase.dart';
+import 'package:quan_ly_chi_tieu/features/wallets/domain/usecases/watch_active_wallets_usecase.dart';
+import 'package:quan_ly_chi_tieu/features/wallets/presentation/providers/add_wallet_notifier.dart';
+import 'package:quan_ly_chi_tieu/features/wallets/presentation/providers/add_wallet_state.dart';
 
-final StreamProvider<List<Wallet>> walletsProvider =
-    StreamProvider<List<Wallet>>((Ref ref) {
-      final AppDatabase database = ref.watch(appDatabaseProvider);
-      final query = database.select(database.wallets)
-        ..where((table) => table.deletedAt.isNull())
-        ..where((table) => table.isActive.equals(1));
-      return query.watch().map((List<Wallet> rows) {
-        final List<Wallet> wallets = List<Wallet>.from(rows);
-        wallets.sort((Wallet a, Wallet b) {
-          final int orderCompare = a.displayOrder.compareTo(b.displayOrder);
-          if (orderCompare != 0) {
-            return orderCompare;
-          }
-          return a.name.compareTo(b.name);
-        });
-        return wallets;
-      });
-    });
+final Provider<WalletsLocalDataSource> walletsLocalDataSourceProvider =
+    Provider<WalletsLocalDataSource>((Ref ref) {
+  return WalletsLocalDataSourceImpl(ref.watch(appDatabaseProvider));
+});
+
+final Provider<WalletsRepository> walletsRepositoryProvider =
+    Provider<WalletsRepository>((Ref ref) {
+  return WalletsRepositoryImpl(ref.watch(walletsLocalDataSourceProvider));
+});
+
+final Provider<WatchActiveWalletsUseCase> watchActiveWalletsUseCaseProvider =
+    Provider<WatchActiveWalletsUseCase>((Ref ref) {
+  return WatchActiveWalletsUseCase(ref.watch(walletsRepositoryProvider));
+});
+
+final Provider<CreateWalletUseCase> createWalletUseCaseProvider =
+    Provider<CreateWalletUseCase>((Ref ref) {
+  return CreateWalletUseCase(ref.watch(walletsRepositoryProvider));
+});
+
+final StreamProvider<List<WalletEntity>> walletsProvider =
+    StreamProvider<List<WalletEntity>>((Ref ref) {
+  return ref.watch(watchActiveWalletsUseCaseProvider).call();
+});
+
+final NotifierProvider<AddWalletNotifier, AddWalletState> addWalletProvider =
+    NotifierProvider<AddWalletNotifier, AddWalletState>(AddWalletNotifier.new);

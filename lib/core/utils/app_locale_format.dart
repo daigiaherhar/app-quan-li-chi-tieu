@@ -1,12 +1,25 @@
+import 'package:quan_ly_chi_tieu/core/constants/app_currency.dart';
 import 'package:quan_ly_chi_tieu/core/utils/vnd_amount_input_format.dart';
 
-String formatVndCurrency(num value) =>
-    '${formatMoneyGroupedInt(value.round())} ₫';
+String _attachCurrencySymbol(String formattedAmount) {
+  switch (kAppCurrency.symbolPosition) {
+    case CurrencySymbolPosition.prefix:
+      return '${kAppCurrency.symbol}$formattedAmount';
+    case CurrencySymbolPosition.suffix:
+      return '$formattedAmount ${kAppCurrency.symbol}';
+  }
+}
 
-String formatSignedVndCurrency(num value, {required bool isExpense}) {
+/// Formats [value] using grouped thousands and the active app currency.
+String formatAppCurrency(num value) {
+  return _attachCurrencySymbol(formatMoneyGroupedInt(value.round()));
+}
+
+/// Same as [formatAppCurrency] but with a leading +/- sign for income/expense.
+String formatSignedAppCurrency(num value, {required bool isExpense}) {
   final String sign = isExpense ? '-' : '+';
   final String formatted = formatMoneyGroupedInt(value.abs().round());
-  return '$sign$formatted ₫';
+  return '$sign${_attachCurrencySymbol(formatted)}';
 }
 
 String timeOfDayGreetingVi() {

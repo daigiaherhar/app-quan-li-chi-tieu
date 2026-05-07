@@ -37,7 +37,6 @@ class TransactionAmountHero extends StatefulWidget {
 
 class _TransactionAmountHeroState extends State<TransactionAmountHero> {
   static const FontWeight _amountWeight = FontWeight.w800;
-  static const String _currencySymbol = 'đ';
 
   @override
   void initState() {
@@ -66,7 +65,7 @@ class _TransactionAmountHeroState extends State<TransactionAmountHero> {
 
   double _suffixWidth(TextStyle unitStyle) {
     final TextPainter painter = TextPainter(
-      text: TextSpan(text: _currencySymbol, style: unitStyle),
+      text: TextSpan(text: kAppCurrency.displayLabel, style: unitStyle),
       maxLines: 1,
       textDirection: TextDirection.ltr,
     )..layout();
@@ -261,7 +260,7 @@ class _TransactionAmountHeroState extends State<TransactionAmountHero> {
                     ),
                   ),
                   SizedBox(width: suffixGap),
-                  Text(_currencySymbol, style: unitStyle),
+                  Text(kAppCurrency.displayLabel, style: unitStyle),
                 ],
               );
             },

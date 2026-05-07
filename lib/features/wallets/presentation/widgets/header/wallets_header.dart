@@ -35,7 +35,7 @@ class _WalletSummaryCard extends StatelessWidget {
           ),
           context.gap.h8,
           Text(
-            formatVndCurrency(totalBalance),
+            formatAppCurrency(totalBalance),
             style: context.textStyles.h2.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w800,

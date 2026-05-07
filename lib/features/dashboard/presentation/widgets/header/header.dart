@@ -195,7 +195,7 @@ class _BalanceHeroCard extends StatelessWidget {
           ),
           context.gap.h8,
           Text(
-            formatVndCurrency(summary.balance),
+            formatAppCurrency(summary.balance),
             style: context.textStyles.h1.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w800,
@@ -208,7 +208,7 @@ class _BalanceHeroCard extends StatelessWidget {
               Expanded(
                 child: _HeroStatTile(
                   label: 'Thu nhập',
-                  amount: formatSignedVndCurrency(
+                  amount: formatSignedAppCurrency(
                     summary.income,
                     isExpense: false,
                   ),
@@ -220,7 +220,7 @@ class _BalanceHeroCard extends StatelessWidget {
               Expanded(
                 child: _HeroStatTile(
                   label: 'Chi tiêu',
-                  amount: formatSignedVndCurrency(
+                  amount: formatSignedAppCurrency(
                     summary.expense,
                     isExpense: true,
                   ),

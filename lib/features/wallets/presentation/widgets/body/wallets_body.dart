@@ -3,12 +3,12 @@ part of '../../pages/wallets_page.dart';
 class _WalletsBody extends StatelessWidget {
   const _WalletsBody({required this.walletsAsync});
 
-  final AsyncValue<List<Wallet>> walletsAsync;
+  final AsyncValue<List<WalletEntity>> walletsAsync;
 
   @override
   Widget build(BuildContext context) {
     return walletsAsync.when(
-      data: (List<Wallet> wallets) {
+      data: (List<WalletEntity> wallets) {
         if (wallets.isEmpty) {
           return Center(
             child: Text(
@@ -21,7 +21,8 @@ class _WalletsBody extends StatelessWidget {
         }
         final double totalBalance = wallets.fold<double>(
           0,
-          (double sum, Wallet wallet) => sum + wallet.currentBalance.toDouble(),
+          (double sum, WalletEntity wallet) =>
+              sum + wallet.currentBalance.toDouble(),
         );
         return ListView.separated(
           padding: EdgeInsets.all(16.w(context)),
@@ -31,7 +32,7 @@ class _WalletsBody extends StatelessWidget {
             if (index == 0) {
               return _WalletSummaryCard(totalBalance: totalBalance);
             }
-            final Wallet wallet = wallets[index - 1];
+            final WalletEntity wallet = wallets[index - 1];
             return _WalletTile(wallet: wallet);
           },
         );
@@ -52,17 +53,19 @@ class _WalletsBody extends StatelessWidget {
 class _WalletTile extends StatelessWidget {
   const _WalletTile({required this.wallet});
 
-  final Wallet wallet;
+  final WalletEntity wallet;
 
   @override
   Widget build(BuildContext context) {
-    final bool isDefaultWallet = wallet.isDefault == 1;
+    final bool isDefaultWallet = wallet.isDefault;
     return Container(
       padding: EdgeInsets.all(14.w(context)),
       decoration: BoxDecoration(
         color: context.colors.cardSurface,
         borderRadius: context.sizes.r14,
-        border: Border.all(color: context.colors.border.withValues(alpha: 0.28)),
+        border: Border.all(
+          color: context.colors.border.withValues(alpha: 0.28),
+        ),
       ),
       child: Row(
         children: <Widget>[
@@ -129,7 +132,7 @@ class _WalletTile extends StatelessWidget {
             ),
           ),
           Text(
-            formatVndCurrency(wallet.currentBalance.toDouble()),
+            formatAppCurrency(wallet.currentBalance.toDouble()),
             style: context.textStyles.bodyLarge.copyWith(
               fontWeight: FontWeight.w800,
               color: context.colors.textPrimary,

@@ -1,0 +1,172 @@
+---
+description: Khung Clean Architecture cho feature Flutter (domain/data/presentation). Áp dụng khi tạo feature mới hoặc refactor feature đã có. Lấy `lib/features/wallets/` làm chuẩn vàng.
+globs: lib/features/**/*.dart
+alwaysApply: false
+---
+
+# Feature Clean Architecture
+
+Khung tổ chức một feature theo Clean Architecture. Lấy `lib/features/wallets/` làm chuẩn vàng — khi nghi ngờ về cấu trúc hoặc layer, mở feature đó ra so sánh.
+
+## 1) Cấu trúc thư mục bắt buộc
+
+```
+lib/features/<feature>/
+├── domain/                                 # Tầng trong cùng — pure Dart, không biết tới Flutter/DB
+│   ├── entities/
+│   │   └── <feature>_entity.dart           # Read model immutable, chỉ field UI cần
+│   ├── repositories/
+│   │   └── <feature>_repository.dart       # abstract, trả Result<T> hoặc Stream<T>
+│   └── usecases/
+│       ├── <action>_<feature>_params.dart  # 1 file 1 params class (tách khỏi usecase)
+│       ├── <action>_<feature>_usecase.dart # Mỗi usecase 1 file
+│       └── watch_<entity>_usecase.dart     # Stream usecase: không wrap Result
+├── data/                                   # Tầng ngoài — phụ thuộc Drift, làm việc với DB
+│   ├── datasources/
+│   │   └── <feature>_local_data_source.dart   # interface + impl, trả model thô
+│   ├── models/
+│   │   └── <feature>_model.dart            # class + fromDrift + toCompanion + extension toEntity
+│   └── repositories/
+│       └── <feature>_repository_impl.dart  # cầu nối domain ↔ data
+└── presentation/                           # Tầng UI — phụ thuộc domain, KHÔNG biết Drift
+    ├── pages/<feature>_page.dart
+    ├── providers/
+    │   ├── <feature>_providers.dart        # DI: datasource, repository, usecase, stream, notifier
+    │   ├── <action>_state.dart             # immutable + copyWith
+    │   └── <action>_notifier.dart          # validate, gọi usecase
+    └── widgets/                            # Tách theo header/body/footer/dialogs
+```
+
+> Nếu feature đơn giản (chưa có business rule rõ): có thể tạm bỏ `domain/usecases/` và `data/repositories/`, để `provider` gọi thẳng `datasource`. Khi cần action ghi (create/update/delete) thì **phải có đầy đủ** repository + usecase.
+
+## 2) Dependency rule (bất di bất dịch)
+
+```
+        ┌──────────────────────┐
+        │   domain (trong)     │  ← KHÔNG được phụ thuộc bất kỳ layer nào khác
+        └──────────▲───────────┘
+                   │
+   ┌───────────────┴────────────┐
+   │                            │
+┌──┴───────────────┐    ┌───────┴────────────┐
+│  data (ngoài)    │    │  presentation      │
+│  → drift         │    │  → flutter, riverpod│
+└──────────────────┘    └────────────────────┘
+```
+
+- `presentation/**` được phép import `domain/**` ✅
+- `data/**` được phép import `domain/**` ✅
+- `domain/**` **KHÔNG** được import `data/**` hoặc `presentation/**` ❌
+- `data/datasources/**` **KHÔNG** được import `domain/usecases/**` (kể cả params) — datasource phải nhận shape của data layer (model hoặc named primitives), không nhận domain shape ❌
+- Nội bộ data: `data/repositories/` → `data/datasources/` + `data/models/` ✅. `data/datasources/` không gọi `data/repositories/` (tránh circular) ❌
+
+## 3) Trách nhiệm từng layer
+
+### Domain (pure Dart)
+
+- `Entity`: immutable, chỉ field UI cần. Bool **không** 0/1. Không có method tham chiếu Drift / Flutter.
+- `Repository abstract`: shape của lệnh là **domain shape** — `Future<Result<T>>` cho action có thể fail, `Stream<T>` cho luồng watch (không wrap Result, error đi qua stream channel).
+- `UseCase`: 1 method `call(Params) → Future<Result<T>>` hoặc `call() → Stream<T>`. Pass-through repository, **không** chứa logic mapping.
+- `Params`: tách khỏi usecase, 1 file riêng `create_wallet_params.dart`. Lý do: notifier/repo có thể consume shape mà không phải import class usecase.
+
+### Data
+
+- `DataSource`: chỉ làm việc với data layer. **Trả model thô** (`Stream<List<XxxModel>>`), không trả entity. **Nhận** `Model` hoặc named primitives, **không** nhận `Params` của domain.
+- `Model`: class chứa data shape + 3 method bridge:
+  - `factory XxxModel.fromDrift(<DriftRow>)` — drift → model.
+  - `toCompanion()` — model → drift companion (gen id nếu null, gen timestamps).
+  - `extension XxxModelToEntity on XxxModel { XxxEntity toEntity() }` — model → domain entity.
+  - `id` để **nullable**: null nghĩa là “bản ghi mới”, `toCompanion()` tự sinh.
+- `Repository impl`: chỗ **duy nhất** map domain shape ↔ data shape. Nhận `Params` (domain), build `Model` (data), gọi datasource. Wrap exception thành `Result.failure`.
+
+### Presentation
+
+- `Providers`: chỉ chứa DI (Riverpod). Chuỗi: `datasourceProvider` → `repositoryProvider` → `usecaseProvider` → `streamProvider`/`notifierProvider`.
+- `State`: immutable, có `copyWith` với `clearXxx` flags để xóa optional field tường minh. Không chứa `BuildContext`.
+- `Notifier`: validate, transform, gọi usecase. **Không** dùng `BuildContext`, **không** gọi `Navigator`/`SnackBar`/`showDialog`. **Không** try/catch — exception đã wrap thành `Result` ở repository.
+- `Widgets`: render state qua `ref.watch`, gọi action qua `ref.read(...notifier).submit(...)`, side-effect (`Navigator.pop`, `SnackBar`) đặt trong `ref.listen(...)`. **Không** validate, **không** parse, **không** gen ID/timestamp/companion.
+
+## 4) Quy tắc cụ thể (do/don't)
+
+### ✅ Do
+
+- Mọi action ghi DB (create/update/delete) đi qua chuỗi **Notifier → UseCase → Repository → DataSource**.
+- Stream `watchXxx` qua usecase pass-through, provider chỉ `.call()`.
+- DataSource trả model, repository impl gọi `model.toEntity()` sau đó.
+- `WalletsCompanion.insert(...)` chỉ trong `data/models/<feature>_model.dart::toCompanion()`.
+- Wrap exception thành `Result.failure` trong `data/repositories/<feature>_repository_impl.dart`.
+- Notifier dùng `result.when(onSuccess, onFailure)` để cập nhật state.
+- 1 file = 1 export (params, usecase, state, notifier... tách file).
+
+### ❌ Don't
+
+- Widget gọi `database.into(...).insert(...)`, gen ID/timestamp, parse số tiền, validate form.
+- Notifier import `package:drift/drift.dart` hoặc `app_database.dart` (trừ `show kXxx` cho hằng).
+- Notifier `try/catch` exception (đã được wrap ở repository).
+- DataSource trả `Stream<List<XxxEntity>>` (entity là domain).
+- Repository abstract nhận `XxxModel` (model là data).
+- DataSource nhận `Params` của usecase (Params là domain).
+- Domain layer import bất cứ thứ gì từ `data/` hoặc `presentation/`.
+- Đặt nhiều class chính trong cùng 1 file (params + usecase chung file là 1 ví dụ — phải tách).
+
+## 5) Naming convention
+
+| Vai trò | Tên class | File |
+|---|---|---|
+| Read entity | `WalletEntity` | `domain/entities/wallet_entity.dart` |
+| Repository abstract | `WalletsRepository` | `domain/repositories/wallets_repository.dart` |
+| UseCase params | `CreateWalletParams` | `domain/usecases/create_wallet_params.dart` |
+| UseCase | `CreateWalletUseCase` | `domain/usecases/create_wallet_usecase.dart` |
+| Stream UseCase | `WatchActiveWalletsUseCase` | `domain/usecases/watch_active_wallets_usecase.dart` |
+| DataSource interface | `WalletsLocalDataSource` | `data/datasources/wallets_local_data_source.dart` |
+| DataSource impl | `WalletsLocalDataSourceImpl` | cùng file trên |
+| Data model | `WalletModel` | `data/models/wallet_model.dart` |
+| Mapping extension | `WalletModelToEntity on WalletModel` | cùng file `wallet_model.dart` |
+| Repository impl | `WalletsRepositoryImpl` | `data/repositories/wallets_repository_impl.dart` |
+| State | `AddWalletState` (+ `AddWalletSubmitStatus` enum) | `presentation/providers/add_wallet_state.dart` |
+| Notifier | `AddWalletNotifier` | `presentation/providers/add_wallet_notifier.dart` |
+| Provider DI | `walletsRepositoryProvider`, `createWalletUseCaseProvider`, ... | `presentation/providers/wallets_providers.dart` |
+
+## 6) Quan hệ với rule khác
+
+- `flutter-no-drift-in-presentation.mdc`: chi tiết về việc cấm Drift rò rỉ ra `presentation/`.
+- `flutter-provider-direction.mdc`: chi tiết về Riverpod (state/notifier/providers + side-effect).
+- `flutter-naming-models.mdc`: naming model dùng chéo feature ở `core/models/`.
+- `karpathy-guidelines.mdc`: nguyên tắc cẩn trọng — **simplicity first**: feature đơn giản chưa cần đủ 3 layer, thêm khi UI thực sự cần.
+
+## 7) Checklist khi tạo / review feature
+
+### Cấu trúc
+
+- [ ] Có đủ 3 thư mục `domain/`, `data/`, `presentation/` (hoặc đã document lý do tạm bỏ 1 layer).
+- [ ] `domain/entities/`, `domain/repositories/`, `domain/usecases/` — mỗi class 1 file.
+- [ ] `data/models/<feature>_model.dart` chứa class + `fromDrift` + `toCompanion` + extension `toEntity`.
+- [ ] `data/datasources/<feature>_local_data_source.dart` có abstract + impl.
+- [ ] `data/repositories/<feature>_repository_impl.dart` implement đúng abstract của domain.
+
+### Dependency direction
+
+- [ ] `domain/**` không import `data/**` hay `presentation/**`.
+- [ ] `data/datasources/**` không import `domain/usecases/**`.
+- [ ] Repository impl là chỗ duy nhất biết cả 2 layer.
+
+### Layer responsibility
+
+- [ ] Widget không có `database.*`, gen ID, parse, validate, build companion.
+- [ ] Notifier không `BuildContext`, không try/catch.
+- [ ] DataSource trả model, không trả entity; nhận model/primitives, không nhận `Params`.
+- [ ] Repository impl wrap exception thành `Result`.
+- [ ] Stream usecase không wrap Result.
+
+### Naming
+
+- [ ] Class entity tên `<Feature>Entity`, model `<Feature>Model`, repository `<Feature>Repository`.
+- [ ] Params và usecase trong 2 file riêng.
+- [ ] DI provider đặt trong `<feature>_providers.dart`.
+
+## 8) Reference: `lib/features/wallets/`
+
+Khi nghi ngờ về một quyết định (đặt class ở đâu, signature method ra sao), **đọc trực tiếp** feature wallets — đây là implementation chuẩn:
+
+- Read flow: `wallets_page` → `walletsProvider` → `WatchActiveWalletsUseCase` → `WalletsRepository` → `WalletsRepositoryImpl` → `WalletsLocalDataSource` → `WalletModel.fromDrift(row)` → `model.toEntity()` → UI.
+- Write flow: `add_wallet_bottom_sheet` (form) → `AddWalletNotifier.submit` → `CreateWalletUseCase(CreateWalletParams)` → `WalletsRepository.createWallet(params)` → `WalletsRepositoryImpl` build `WalletModel(name, type, openingBalance)` → `WalletsLocalDataSource.createWallet(model)` → `model.toCompanion()` → drift insert → UI nhận `Result.success` qua `ref.listen`.

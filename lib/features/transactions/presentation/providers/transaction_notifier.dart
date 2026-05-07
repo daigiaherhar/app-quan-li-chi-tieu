@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quan_ly_chi_tieu/core/base/result.dart';
 import 'package:quan_ly_chi_tieu/core/constants/constants.dart';
-import 'package:quan_ly_chi_tieu/core/database/app_database.dart';
+import 'package:quan_ly_chi_tieu/core/database/app_database.dart'
+    show
+        kDefaultExpenseCategoryId,
+        kDefaultIncomeCategoryId,
+        kTransactionTypeExpense,
+        kTransactionTypeIncome;
 import 'package:quan_ly_chi_tieu/core/models/transaction_category_entity.dart';
 import 'package:quan_ly_chi_tieu/core/utils/vnd_amount_input_format.dart';
-import 'package:quan_ly_chi_tieu/features/transactions/data/models/transaction_dto.dart';
-import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transaction_providers.dart';
+import 'package:quan_ly_chi_tieu/features/transactions/domain/usecases/save_transaction_params.dart';
 import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transaction_state.dart';
+import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transactions_providers.dart';
 
 class TransactionNotifier extends Notifier<TransactionState> {
   TransactionNotifier(this.kind);
@@ -172,37 +178,51 @@ class TransactionNotifier extends Notifier<TransactionState> {
     if (!validateForm(amountText: amountText, noteText: noteText)) {
       return;
     }
-    state = state.copyWith(submitStatus: TransactionSubmitStatus.submitting);
     final int? amount = parseVndAmountDigits(amountText.trim());
     if (amount == null) {
-      state = state.copyWith(
-        submitStatus: TransactionSubmitStatus.idle,
-        amountError: 'Vui lòng nhập số tiền',
-      );
+      state = state.copyWith(amountError: 'Vui lòng nhập số tiền');
       return;
     }
+    state = state.copyWith(
+      submitStatus: TransactionSubmitStatus.submitting,
+      clearErrorMessage: true,
+    );
     final String transactionType = kind == TransactionFlowKind.income
         ? kTransactionTypeIncome
         : kTransactionTypeExpense;
     final String categoryId = kind == TransactionFlowKind.income
         ? kDefaultIncomeCategoryId
         : kDefaultExpenseCategoryId;
-    final TransactionDto dto = TransactionDto(
-      amount: amount,
-      type: transactionType,
-      categoryId: categoryId,
-      note: noteText.trim(),
-      happenedAt: state.happenedAt,
-      walletId: walletId,
+    final Result<void> result =
+        await ref.read(saveTransactionUseCaseProvider).call(
+              SaveTransactionParams(
+                amount: amount,
+                type: transactionType,
+                categoryId: categoryId,
+                note: noteText.trim(),
+                happenedAt: state.happenedAt,
+                walletId: walletId,
+              ),
+            );
+    state = result.when(
+      onSuccess: (_) => state.copyWith(
+        submitStatus: TransactionSubmitStatus.success,
+      ),
+      onFailure: (String _, int __, dynamic ___) => state.copyWith(
+        submitStatus: TransactionSubmitStatus.failure,
+        errorMessage: 'Không thể lưu giao dịch. Vui lòng thử lại.',
+      ),
     );
-    final localDataSource = ref.read(transactionLocalDataSourceProvider);
-    await localDataSource.saveTransaction(dto);
-    state = state.copyWith(submitStatus: TransactionSubmitStatus.success);
   }
 
   void resetSubmitStatus() {
-    if (state.submitStatus == TransactionSubmitStatus.success) {
-      state = state.copyWith(submitStatus: TransactionSubmitStatus.idle);
+    final TransactionSubmitStatus status = state.submitStatus;
+    if (status == TransactionSubmitStatus.success ||
+        status == TransactionSubmitStatus.failure) {
+      state = state.copyWith(
+        submitStatus: TransactionSubmitStatus.idle,
+        clearErrorMessage: true,
+      );
     }
   }
 }

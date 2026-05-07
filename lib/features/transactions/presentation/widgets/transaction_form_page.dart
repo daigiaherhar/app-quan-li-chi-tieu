@@ -7,9 +7,9 @@ import 'package:quan_ly_chi_tieu/core/models/transaction_category_entity.dart';
 import 'package:quan_ly_chi_tieu/core/models/transaction_wallet_entity.dart';
 import 'package:quan_ly_chi_tieu/core/utils/size_utils.dart';
 import 'package:quan_ly_chi_tieu/core/utils/vnd_amount_input_format.dart';
-import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transaction_state.dart';
 import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transaction_notifier.dart';
-import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transaction_providers.dart';
+import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transaction_state.dart';
+import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transactions_providers.dart';
 import 'package:quan_ly_chi_tieu/features/transactions/presentation/widgets/transaction_amount_hero.dart';
 import 'package:quan_ly_chi_tieu/features/transactions/presentation/widgets/transaction_save_button.dart';
 import 'package:quan_ly_chi_tieu/features/transactions/presentation/widgets/transaction_section_caption.dart';
@@ -191,16 +191,41 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
     context.pop();
   }
 
+  void _handleSubmitFailure(TransactionState next) {
+    final String message = next.errorMessage ?? 'Đã xảy ra lỗi, thử lại nhé';
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(color: context.colors.onPrimary),
+        ),
+        backgroundColor: context.colors.error,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+    ref.read(transactionProvider(widget.kind).notifier).resetSubmitStatus();
+  }
+
   void _listenSubmitStatus() {
     ref.listen<TransactionState>(transactionProvider(widget.kind), (
       TransactionState? previous,
       TransactionState next,
     ) {
+      if (!mounted) {
+        return;
+      }
       final bool isNewSuccess =
           next.submitStatus == TransactionSubmitStatus.success &&
           previous?.submitStatus != TransactionSubmitStatus.success;
-      if (isNewSuccess && mounted) {
+      if (isNewSuccess) {
         _handleSubmitSuccess(next);
+        return;
+      }
+      final bool isNewFailure =
+          next.submitStatus == TransactionSubmitStatus.failure &&
+          previous?.submitStatus != TransactionSubmitStatus.failure;
+      if (isNewFailure) {
+        _handleSubmitFailure(next);
       }
     });
   }

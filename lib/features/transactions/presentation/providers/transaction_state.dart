@@ -4,7 +4,7 @@ import 'package:quan_ly_chi_tieu/core/models/transaction_category_entity.dart';
 /// Distinguishes income vs expense flows — shared UI, different accent colors.
 enum TransactionFlowKind { income, expense }
 
-enum TransactionSubmitStatus { idle, submitting, success }
+enum TransactionSubmitStatus { idle, submitting, success, failure }
 
 @immutable
 class TransactionState {
@@ -16,6 +16,7 @@ class TransactionState {
     required this.amountError,
     required this.noteError,
     required this.submitStatus,
+    required this.errorMessage,
   });
 
   factory TransactionState.initial({
@@ -31,6 +32,7 @@ class TransactionState {
       amountError: null,
       noteError: null,
       submitStatus: TransactionSubmitStatus.idle,
+      errorMessage: null,
     );
   }
 
@@ -41,6 +43,7 @@ class TransactionState {
   final String? amountError;
   final String? noteError;
   final TransactionSubmitStatus submitStatus;
+  final String? errorMessage;
 
   bool get isIncome => kind == TransactionFlowKind.income;
   bool get isSaving => submitStatus == TransactionSubmitStatus.submitting;
@@ -56,6 +59,8 @@ class TransactionState {
     bool clearAmountError = false,
     bool clearNoteError = false,
     TransactionSubmitStatus? submitStatus,
+    String? errorMessage,
+    bool clearErrorMessage = false,
   }) {
     return TransactionState(
       kind: kind,
@@ -67,6 +72,8 @@ class TransactionState {
       amountError: clearAmountError ? null : (amountError ?? this.amountError),
       noteError: clearNoteError ? null : (noteError ?? this.noteError),
       submitStatus: submitStatus ?? this.submitStatus,
+      errorMessage:
+          clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
     );
   }
 }

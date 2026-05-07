@@ -14,7 +14,7 @@ class _LedgerTransactionTile extends StatelessWidget {
     final IconData icon =
         isExpense ? Icons.arrow_outward_rounded : Icons.arrow_downward_rounded;
 
-    final String amountText = formatSignedVndCurrency(
+    final String amountText = formatSignedAppCurrency(
       transaction.amount,
       isExpense: isExpense,
     );
