@@ -194,12 +194,18 @@ class _BalanceHeroCard extends StatelessWidget {
             ],
           ),
           context.gap.h8,
-          Text(
-            formatAppCurrency(summary.balance),
-            style: context.textStyles.h1.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-              fontSize: 30.w(context),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              formatAppCurrency(summary.balance),
+              maxLines: 1,
+              softWrap: false,
+              style: context.textStyles.h1.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+                fontSize: 30.w(context),
+              ),
             ),
           ),
           context.gap.h20,

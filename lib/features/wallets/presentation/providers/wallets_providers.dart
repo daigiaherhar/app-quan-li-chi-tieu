@@ -5,6 +5,7 @@ import 'package:quan_ly_chi_tieu/features/wallets/data/repositories/wallets_repo
 import 'package:quan_ly_chi_tieu/features/wallets/domain/entities/wallet_entity.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/domain/repositories/wallets_repository.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/domain/usecases/create_wallet_usecase.dart';
+import 'package:quan_ly_chi_tieu/features/wallets/domain/usecases/delete_wallet_usecase.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/domain/usecases/watch_active_wallets_usecase.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/presentation/providers/add_wallet_notifier.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/presentation/providers/add_wallet_state.dart';
@@ -27,6 +28,11 @@ final Provider<WatchActiveWalletsUseCase> watchActiveWalletsUseCaseProvider =
 final Provider<CreateWalletUseCase> createWalletUseCaseProvider =
     Provider<CreateWalletUseCase>((Ref ref) {
   return CreateWalletUseCase(ref.watch(walletsRepositoryProvider));
+});
+
+final Provider<DeleteWalletUseCase> deleteWalletUseCaseProvider =
+    Provider<DeleteWalletUseCase>((Ref ref) {
+  return DeleteWalletUseCase(ref.watch(walletsRepositoryProvider));
 });
 
 final StreamProvider<List<WalletEntity>> walletsProvider =

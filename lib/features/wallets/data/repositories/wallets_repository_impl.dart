@@ -4,6 +4,7 @@ import 'package:quan_ly_chi_tieu/features/wallets/data/models/wallet_model.dart'
 import 'package:quan_ly_chi_tieu/features/wallets/domain/entities/wallet_entity.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/domain/repositories/wallets_repository.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/domain/usecases/create_wallet_params.dart';
+import 'package:quan_ly_chi_tieu/features/wallets/domain/usecases/delete_wallet_params.dart';
 
 class WalletsRepositoryImpl implements WalletsRepository {
   WalletsRepositoryImpl(this._localDataSource);
@@ -29,6 +30,16 @@ class WalletsRepositoryImpl implements WalletsRepository {
           openingBalance: params.openingBalance,
         ),
       );
+      return const Success<void>(null);
+    } catch (error) {
+      return Failure<void>(error.toString());
+    }
+  }
+
+  @override
+  Future<Result<void>> deleteWallet(DeleteWalletParams params) async {
+    try {
+      await _localDataSource.softDeleteWallet(params.id);
       return const Success<void>(null);
     } catch (error) {
       return Failure<void>(error.toString());

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottie/lottie.dart';
+import 'package:quan_ly_chi_tieu/core/base/result.dart';
 import 'package:quan_ly_chi_tieu/core/constants/constants.dart';
 import 'package:quan_ly_chi_tieu/core/utils/app_locale_format.dart';
 import 'package:quan_ly_chi_tieu/core/utils/size_utils.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/domain/entities/wallet_entity.dart';
+import 'package:quan_ly_chi_tieu/features/wallets/domain/usecases/delete_wallet_params.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/presentation/providers/wallets_providers.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/presentation/widgets/dialogs/add_wallet_bottom_sheet.dart';
+import 'package:quan_ly_chi_tieu/generated/assets.dart';
 import 'package:quan_ly_chi_tieu/shared/widgets/widgets.dart';
 
 part '../widgets/header/wallets_header.dart';
@@ -16,8 +20,9 @@ class WalletsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<WalletEntity>> walletsAsync =
-        ref.watch(walletsProvider);
+    final AsyncValue<List<WalletEntity>> walletsAsync = ref.watch(
+      walletsProvider,
+    );
     return Scaffold(
       backgroundColor: context.colors.dashboardBackground,
       appBar: BaseAppBar(

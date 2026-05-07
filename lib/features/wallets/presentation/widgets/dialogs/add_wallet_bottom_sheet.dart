@@ -2,11 +2,13 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottie/lottie.dart';
 import 'package:quan_ly_chi_tieu/core/constants/constants.dart';
 import 'package:quan_ly_chi_tieu/core/utils/size_utils.dart';
 import 'package:quan_ly_chi_tieu/core/utils/vnd_amount_input_format.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/presentation/providers/add_wallet_state.dart';
 import 'package:quan_ly_chi_tieu/features/wallets/presentation/providers/wallets_providers.dart';
+import 'package:quan_ly_chi_tieu/generated/assets.dart';
 
 /// Rounded sheet + form — matches styling of [showLabeledOptionPickerSheet].
 Future<void> showAddWalletBottomSheet(BuildContext context) {
@@ -42,7 +44,9 @@ class _AddWalletBottomSheetState extends ConsumerState<_AddWalletBottomSheet> {
   }
 
   void _onSave() {
-    ref.read(addWalletProvider.notifier).submit(
+    ref
+        .read(addWalletProvider.notifier)
+        .submit(
           nameText: _nameController.text,
           openingBalanceText: _openingBalanceController.text,
         );
@@ -51,7 +55,8 @@ class _AddWalletBottomSheetState extends ConsumerState<_AddWalletBottomSheet> {
   InputDecoration _fieldDecoration(
     BuildContext context, {
     required String hintText,
-    required IconData icon,
+    IconData? icon,
+    String? iconLottie,
     Widget? suffix,
     String? errorText,
   }) {
@@ -65,14 +70,23 @@ class _AddWalletBottomSheetState extends ConsumerState<_AddWalletBottomSheet> {
       hintText: hintText,
       filled: true,
       fillColor: context.colors.cardSurface,
-      prefixIcon: Icon(
-        icon,
-        color: context.colors.pastelIndigoOn,
-        size: context.sizes.i20,
-      ),
+      prefixIcon: icon != null
+          ? Icon(
+              icon,
+              color: context.colors.pastelIndigoOn,
+              size: context.sizes.i20,
+            )
+          : iconLottie != null
+          ? SizedBox(
+              width: 24.w(context),
+              height: 24.w(context),
+              child: Lottie.asset(iconLottie),
+            )
+          : const SizedBox(),
       suffix: suffix,
       errorText: errorText,
       border: border,
+
       enabledBorder: border,
       focusedBorder: OutlineInputBorder(
         borderRadius: context.sizes.r12,
@@ -249,9 +263,9 @@ class _AddWalletBottomSheetState extends ConsumerState<_AddWalletBottomSheet> {
       }
       final String? message = next.errorMessage;
       if (message != null && previous?.errorMessage != message) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
       }
     });
 
@@ -343,7 +357,8 @@ class _AddWalletBottomSheetState extends ConsumerState<_AddWalletBottomSheet> {
                           decoration: _fieldDecoration(
                             context,
                             hintText: '0 (có thể bỏ trống)',
-                            icon: Icons.savings_rounded,
+                            // icon: Icons.savings_rounded,
+                            iconLottie: Assets.assetLottie.savePig,
                             suffix: Text(
                               kAppCurrency.code,
                               style: context.textStyles.bodySmall.copyWith(
