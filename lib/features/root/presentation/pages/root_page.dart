@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:quan_ly_chi_tieu/core/constants/constants.dart';
 import 'package:quan_ly_chi_tieu/core/router/app_route_paths.dart';
 import 'package:quan_ly_chi_tieu/core/utils/size_utils.dart';
+import 'package:quan_ly_chi_tieu/features/ocr_transactions/presentation/widgets/ocr_transaction_scanner.dart';
 import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/transaction_state.dart';
 import 'package:quan_ly_chi_tieu/generated/assets.dart';
 import 'package:quan_ly_chi_tieu/features/dashboard/presentation/pages/dashboard_page.dart';
@@ -45,6 +46,35 @@ class _RootPageState extends State<RootPage> {
     });
   }
 
+  void _closeCenterMenu() {
+    if (!_isCenterMenuOpen) {
+      return;
+    }
+    setState(() {
+      _isCenterMenuOpen = false;
+    });
+  }
+
+  void _showOcrScannerFromCenterMenu() {
+    _closeCenterMenu();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      showOcrTransactionScanner(context);
+    });
+  }
+
+  void _pushTransactionFromCenterMenu(TransactionFlowKind kind) {
+    _closeCenterMenu();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      context.push(AppRoutePaths.transaction, extra: kind);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +94,12 @@ class _RootPageState extends State<RootPage> {
           ),
           if (_isCenterMenuOpen)
             _QuickActionPopup(
-              onClose: _toggleCenterMenu,
+              onClose: _closeCenterMenu,
+              onScanReceipt: _showOcrScannerFromCenterMenu,
+              onAddExpense: () =>
+                  _pushTransactionFromCenterMenu(TransactionFlowKind.expense),
+              onAddIncome: () =>
+                  _pushTransactionFromCenterMenu(TransactionFlowKind.income),
               contextGap: context.gap,
             ),
           Positioned(

@@ -1,9 +1,18 @@
 part of '../pages/root_page.dart';
 
 class _QuickActionPopup extends StatelessWidget {
-  const _QuickActionPopup({required this.onClose, required this.contextGap});
+  const _QuickActionPopup({
+    required this.onClose,
+    required this.onScanReceipt,
+    required this.onAddExpense,
+    required this.onAddIncome,
+    required this.contextGap,
+  });
 
   final VoidCallback onClose;
+  final VoidCallback onScanReceipt;
+  final VoidCallback onAddExpense;
+  final VoidCallback onAddIncome;
   final AppGapScheme contextGap;
 
   @override
@@ -31,17 +40,19 @@ class _QuickActionPopup extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _QuickActionPopupItem(
+                  label: 'Quét HĐ',
+                  color: Colors.indigo,
+                  icon: Icons.document_scanner_rounded,
+                  backgroundColor: Colors.indigo.withValues(alpha: 0.5),
+                  onTap: onScanReceipt,
+                ).animate().scale(delay: 150.ms, curve: Curves.easeOutBack),
+                contextGap.w32,
+                _QuickActionPopupItem(
                   label: 'Chi tiêu',
                   svgAssetPath: Assets.assetIcons.iconChi,
                   color: context.colors.expense,
                   backgroundColor: context.colors.expenseSurface,
-                  onTap: () {
-                    onClose();
-                    context.push(
-                      AppRoutePaths.transaction,
-                      extra: TransactionFlowKind.expense,
-                    );
-                  },
+                  onTap: onAddExpense,
                 ).animate().scale(delay: 50.ms, curve: Curves.easeOutBack),
                 contextGap.w32,
                 _QuickActionPopupItem(
@@ -49,13 +60,7 @@ class _QuickActionPopup extends StatelessWidget {
                   svgAssetPath: Assets.assetIcons.iconThu,
                   color: context.colors.income,
                   backgroundColor: context.colors.incomeSurface,
-                  onTap: () {
-                    onClose();
-                    context.push(
-                      AppRoutePaths.transaction,
-                      extra: TransactionFlowKind.income,
-                    );
-                  },
+                  onTap: onAddIncome,
                 ).animate().scale(delay: 150.ms, curve: Curves.easeOutBack),
               ],
             ),
@@ -67,18 +72,18 @@ class _QuickActionPopup extends StatelessWidget {
 }
 
 class _QuickActionPopupItem extends StatelessWidget {
-  // Asset paths come from generated Assets (not const expressions).
-  // ignore: prefer_const_constructors_in_immutables
-  _QuickActionPopupItem({
+  const _QuickActionPopupItem({
     required this.label,
-    required this.svgAssetPath,
+    this.svgAssetPath,
+    this.icon,
     required this.color,
     this.backgroundColor,
     required this.onTap,
   });
 
   final String label;
-  final String svgAssetPath;
+  final String? svgAssetPath;
+  final IconData? icon;
   final Color color;
   final Color? backgroundColor;
   final VoidCallback onTap;
@@ -110,16 +115,16 @@ class _QuickActionPopupItem extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset(
-                  svgAssetPath,
-                  width: 34,
-                  height: 34,
-                  // colorFilter: const ColorFilter.mode(
-                  //   Colors.white,
-                  //   BlendMode.srcIn,
-                  // ),
-                  fit: BoxFit.contain,
-                ),
+                child: svgAssetPath?.isNotEmpty ?? false
+                    ? SvgPicture.asset(
+                        svgAssetPath!,
+                        width: 34,
+                        height: 34,
+                        fit: BoxFit.contain,
+                      )
+                    : icon != null
+                    ? Icon(icon, size: 34, color: color)
+                    : const SizedBox(),
               ),
             ),
           ),

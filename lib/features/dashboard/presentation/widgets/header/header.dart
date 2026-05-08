@@ -325,7 +325,6 @@ class _HeroStatTile extends StatelessWidget {
               ),
             ),
           ),
-          context.gap.h4,
         ],
       ),
     );

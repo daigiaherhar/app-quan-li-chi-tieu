@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:quan_ly_chi_tieu/core/router/app_route_paths.dart';
+import 'package:quan_ly_chi_tieu/features/ocr_transactions/presentation/pages/ocr_transaction_confirm_page.dart';
 import 'package:quan_ly_chi_tieu/features/profile/presentation/providers/profile_providers.dart';
 import 'package:quan_ly_chi_tieu/features/root/presentation/pages/root_page.dart';
 import 'package:quan_ly_chi_tieu/features/splash/presentation/pages/splash_page.dart';
@@ -45,6 +46,12 @@ final Provider<GoRouter> appRouterProvider = Provider<GoRouter>((Ref ref) {
         path: AppRoutePaths.transaction,
         builder: (BuildContext context, GoRouterState state) {
           return TransactionPage.fromRoute(state);
+        },
+      ),
+      GoRoute(
+        path: AppRoutePaths.ocrTransactionConfirm,
+        builder: (BuildContext context, GoRouterState state) {
+          return OcrTransactionConfirmPage.fromRoute(state);
         },
       ),
       GoRoute(
