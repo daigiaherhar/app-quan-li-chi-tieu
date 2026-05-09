@@ -5,21 +5,18 @@ class _OcrConfirmBottomBar extends StatelessWidget {
     required this.selectedCount,
     required this.isSaving,
     required this.canSave,
-    required this.bottomSafe,
     required this.onSave,
   });
 
   final int selectedCount;
   final bool isSaving;
   final bool canSave;
-  final double bottomSafe;
   final VoidCallback? onSave;
 
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.colors.surface,
         boxShadow: <BoxShadow>[
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -33,7 +30,7 @@ class _OcrConfirmBottomBar extends StatelessWidget {
           16.w(context),
           12.w(context),
           16.w(context),
-          12.w(context) + bottomSafe,
+          12.w(context),
         ),
         child: SizedBox(
           height: 52.w(context),

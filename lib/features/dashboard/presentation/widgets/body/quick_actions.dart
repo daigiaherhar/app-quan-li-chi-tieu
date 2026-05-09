@@ -7,13 +7,6 @@ class _QuickActionsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<_QuickActionData> actions = <_QuickActionData>[
       _QuickActionData(
-        icon: Icons.document_scanner_rounded,
-        label: 'Quét HĐ',
-        background: context.colors.pastelIndigo,
-        foreground: context.colors.pastelIndigoOn,
-        onTap: () => showOcrTransactionScanner(context),
-      ),
-      _QuickActionData(
         icon: Icons.account_balance_wallet_rounded,
         label: 'Ví',
         background: context.colors.pastelMint,
@@ -50,9 +43,11 @@ class _QuickActionsRow extends StatelessWidget {
         final double itemWidth =
             (constraints.maxWidth - spacing * (columnCount - 1)) / columnCount;
 
-        return Wrap(
+        return Row(
           spacing: spacing,
-          runSpacing: 12.w(context),
+          // runSpacing: 12.w(context),
+          // runAlignment: WrapAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: actions
               .map(
                 (_QuickActionData action) => SizedBox(

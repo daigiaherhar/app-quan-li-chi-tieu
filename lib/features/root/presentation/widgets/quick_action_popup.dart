@@ -43,7 +43,7 @@ class _QuickActionPopup extends StatelessWidget {
                   label: 'Quét HĐ',
                   color: Colors.indigo,
                   icon: Icons.document_scanner_rounded,
-                  backgroundColor: Colors.indigo.withValues(alpha: 0.5),
+                  backgroundColor: context.colors.white,
                   onTap: onScanReceipt,
                 ).animate().scale(delay: 150.ms, curve: Curves.easeOutBack),
                 contextGap.w32,

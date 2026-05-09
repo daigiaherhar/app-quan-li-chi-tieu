@@ -8,7 +8,6 @@ class _OcrTransactionConfirmBody extends StatelessWidget {
     required this.selectedWallet,
     required this.onWalletTap,
     required this.onTransactionChanged,
-    required this.onSave,
   });
 
   final OcrTransactionResult result;
@@ -17,11 +16,9 @@ class _OcrTransactionConfirmBody extends StatelessWidget {
   final TransactionWalletEntity? selectedWallet;
   final VoidCallback? onWalletTap;
   final void Function(int index, bool selected) onTransactionChanged;
-  final VoidCallback? onSave;
 
   @override
   Widget build(BuildContext context) {
-    final double bottomSafe = MediaQuery.paddingOf(context).bottom;
     return SafeArea(
       top: false,
       child: Column(
@@ -62,13 +59,6 @@ class _OcrTransactionConfirmBody extends StatelessWidget {
                 ],
               ],
             ),
-          ),
-          _OcrConfirmBottomBar(
-            selectedCount: state.selectedCount,
-            isSaving: state.isSaving,
-            canSave: state.selectedCount > 0 && selectedWallet != null,
-            bottomSafe: bottomSafe,
-            onSave: onSave,
           ),
         ],
       ),

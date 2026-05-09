@@ -18,7 +18,9 @@ import 'package:quan_ly_chi_tieu/features/transactions/presentation/providers/tr
 import 'package:quan_ly_chi_tieu/shared/widgets/widgets.dart';
 
 part '../widgets/body/ocr_transaction_confirm_body.dart';
+
 part '../widgets/footer/ocr_transaction_confirm_bottom_bar.dart';
+
 part '../widgets/header/ocr_transaction_confirm_header.dart';
 
 class OcrTransactionConfirmPage extends ConsumerWidget {
@@ -93,6 +95,18 @@ class OcrTransactionConfirmPage extends ConsumerWidget {
           ),
         ),
       ),
+      floatingActionButton: _OcrConfirmBottomBar(
+        selectedCount: state.selectedCount,
+        isSaving: state.isSaving,
+        canSave: state.selectedCount > 0 && selectedWallet != null,
+        onSave: selectedWallet == null
+            ? null
+            : () => notifier.submitSelected(
+                walletId: selectedWallet.id,
+                incomeCategories: incomeCategories,
+                expenseCategories: expenseCategories,
+              ),
+      ),
       body: _OcrTransactionConfirmBody(
         result: result,
         state: state,
@@ -107,13 +121,6 @@ class OcrTransactionConfirmPage extends ConsumerWidget {
                 selectedWallet: selectedWallet,
               ),
         onTransactionChanged: notifier.setTransactionSelected,
-        onSave: selectedWallet == null
-            ? null
-            : () => notifier.submitSelected(
-                walletId: selectedWallet.id,
-                incomeCategories: incomeCategories,
-                expenseCategories: expenseCategories,
-              ),
       ),
     );
   }
