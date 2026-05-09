@@ -11,7 +11,7 @@ import 'package:quan_ly_chi_tieu/core/entities/transaction.dart';
 import 'package:quan_ly_chi_tieu/core/utils/app_locale_format.dart';
 import 'package:quan_ly_chi_tieu/core/utils/size_utils.dart';
 import 'package:quan_ly_chi_tieu/features/dashboard/presentation/providers/dashboard_providers.dart';
-import 'package:quan_ly_chi_tieu/features/ocr_transactions/presentation/widgets/ocr_transaction_scanner.dart';
+import 'package:quan_ly_chi_tieu/features/root/presentation/providers/root_providers.dart';
 import 'package:quan_ly_chi_tieu/generated/assets.dart';
 part '../widgets/header/header.dart';
 part '../widgets/body/body.dart';

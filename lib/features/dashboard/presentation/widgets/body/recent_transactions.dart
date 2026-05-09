@@ -1,14 +1,13 @@
 part of '../../pages/dashboard_page.dart';
 
-class _RecentTransactionsCard extends StatelessWidget {
+class _RecentTransactionsCard extends ConsumerWidget {
   const _RecentTransactionsCard({required this.items});
 
   final List<TransactionEntity> items;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final List<TransactionEntity> recent = items.take(5).toList();
-
     return _SurfaceCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -26,7 +25,7 @@ class _RecentTransactionsCard extends StatelessWidget {
               ),
               if (recent.isNotEmpty)
                 InkWell(
-                  onTap: () {},
+                  onTap: () => ref.read(rootProvider.notifier).selectTab(1),
                   borderRadius: BorderRadius.circular(8),
                   child: Padding(
                     padding: EdgeInsets.symmetric(

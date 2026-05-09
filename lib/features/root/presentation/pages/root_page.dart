@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:quan_ly_chi_tieu/core/constants/constants.dart';
@@ -14,12 +15,14 @@ import 'package:quan_ly_chi_tieu/features/dashboard/presentation/pages/dashboard
 import 'package:quan_ly_chi_tieu/features/ledger/presentation/pages/ledger_page.dart';
 import 'package:quan_ly_chi_tieu/features/profile/presentation/pages/profile_page.dart';
 import 'package:quan_ly_chi_tieu/features/reports/presentation/pages/reports_page.dart';
+import 'package:quan_ly_chi_tieu/features/root/presentation/providers/root_providers.dart';
+import 'package:quan_ly_chi_tieu/features/root/presentation/providers/root_state.dart';
 import 'package:quan_ly_chi_tieu/features/root/presentation/widgets/root_dock_tab_bar.dart';
 
 part '../widgets/quick_action_popup.dart';
 
 /// Root shell: dock tab bar (CustomPaint + center action) + tab pages.
-class RootPage extends StatefulWidget {
+class RootPage extends ConsumerStatefulWidget {
   const RootPage({super.key});
 
   static const List<String> tabTitles = <String>[
@@ -30,29 +33,19 @@ class RootPage extends StatefulWidget {
   ];
 
   @override
-  State<RootPage> createState() => _RootPageState();
+  ConsumerState<RootPage> createState() => _RootPageState();
 }
 
-class _RootPageState extends State<RootPage> {
-  int _tabIndex = 0;
-  bool _isCenterMenuOpen = false;
-
+class _RootPageState extends ConsumerState<RootPage> {
   // Dùng GlobalKey để giữ state Tabbar không bị reset khi Stack thay đổi
   final GlobalKey _tabBarKey = GlobalKey();
 
   void _toggleCenterMenu() {
-    setState(() {
-      _isCenterMenuOpen = !_isCenterMenuOpen;
-    });
+    ref.read(rootProvider.notifier).toggleCenterMenu();
   }
 
   void _closeCenterMenu() {
-    if (!_isCenterMenuOpen) {
-      return;
-    }
-    setState(() {
-      _isCenterMenuOpen = false;
-    });
+    ref.read(rootProvider.notifier).closeCenterMenu();
   }
 
   void _showOcrScannerFromCenterMenu() {
@@ -77,6 +70,8 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
+    final RootState rootState = ref.watch(rootProvider);
+
     return Scaffold(
       backgroundColor: context.colors.background,
       appBar: null, // Tất cả các trang tab tự quản lý Liquid Header
@@ -84,7 +79,7 @@ class _RootPageState extends State<RootPage> {
       body: Stack(
         children: <Widget>[
           IndexedStack(
-            index: _tabIndex,
+            index: rootState.currentIndex,
             children: const <Widget>[
               DashboardPage(),
               LedgerPage(),
@@ -92,7 +87,7 @@ class _RootPageState extends State<RootPage> {
               ProfilePage(),
             ],
           ),
-          if (_isCenterMenuOpen)
+          if (rootState.isCenterMenuOpen)
             _QuickActionPopup(
               onClose: _closeCenterMenu,
               onScanReceipt: _showOcrScannerFromCenterMenu,
@@ -109,11 +104,10 @@ class _RootPageState extends State<RootPage> {
             child: RootDockTabBar(
               key: _tabBarKey,
               tabTitles: RootPage.tabTitles,
-              currentIndex: _tabIndex,
-              isCenterOpen: _isCenterMenuOpen,
+              currentIndex: rootState.currentIndex,
+              isCenterOpen: rootState.isCenterMenuOpen,
               onIndexChanged: (int index) {
-                if (_isCenterMenuOpen) _toggleCenterMenu();
-                setState(() => _tabIndex = index);
+                ref.read(rootProvider.notifier).selectTab(index);
               },
               onCenterPressed: _toggleCenterMenu,
             ),

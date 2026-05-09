@@ -1,10 +1,7 @@
 part of '../../pages/ledger_page.dart';
 
 class _LedgerHeader extends StatelessWidget {
-  const _LedgerHeader({
-    required this.chipIndex,
-    required this.onChipChanged,
-  });
+  const _LedgerHeader({required this.chipIndex, required this.onChipChanged});
 
   final int chipIndex;
   final ValueChanged<int> onChipChanged;
@@ -12,49 +9,60 @@ class _LedgerHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(20.w(context), 12.w(context), 20.w(context), 20.w(context)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const SizedBox(height: kToolbarHeight * 0.5),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Sổ giao dịch',
-                      style: context.textStyles.h2.copyWith(
-                        color: context.colors.textPrimary,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -0.8,
-                      ),
+          padding: EdgeInsets.fromLTRB(
+            20.w(context),
+            12.w(context),
+            20.w(context),
+            20.w(context),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const SizedBox(height: kToolbarHeight * 0.5),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Sổ giao dịch',
+                          style: context.textStyles.h2.copyWith(
+                            color: context.colors.textPrimary,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -0.8,
+                          ),
+                        ),
+                        Text(
+                          'Quản lý dòng tiền của bạn',
+                          style: context.textStyles.bodySmall.copyWith(
+                            color: context.colors.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      'Quản lý dòng tiền của bạn',
-                      style: context.textStyles.bodySmall.copyWith(
-                        color: context.colors.textSecondary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  _HeaderCircleButton(icon: Icons.search_rounded, onTap: () {}),
+                  context.gap.w12,
+                  _HeaderCircleButton(
+                    icon: Icons.calendar_today_rounded,
+                    onTap: () {},
+                  ),
+                ],
               ),
-              _HeaderCircleButton(icon: Icons.search_rounded, onTap: () {}),
-              context.gap.w12,
-              _HeaderCircleButton(icon: Icons.calendar_today_rounded, onTap: () {}),
+              context.gap.h24,
+              _LiquidSegmentedControl(
+                currentIndex: chipIndex,
+                onIndexChanged: onChipChanged,
+                labels: TabTransaction.values.map((tab) => tab.label).toList(),
+              ),
             ],
           ),
-          context.gap.h24,
-          _LiquidSegmentedControl(
-            currentIndex: chipIndex,
-            onIndexChanged: onChipChanged,
-            labels: const ['Tất cả', 'Chi tiêu', 'Thu nhập'],
-          ),
-        ],
-      ),
-    ).animate().slideY(begin: -0.1, duration: 600.ms, curve: Curves.easeOutCubic).fadeIn();
+        )
+        .animate()
+        .slideY(begin: -0.1, duration: 600.ms, curve: Curves.easeOutCubic)
+        .fadeIn();
   }
 }
 
@@ -77,7 +85,10 @@ class _LiquidSegmentedControl extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.colors.cardSurface.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 1.5),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.5),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -125,8 +136,12 @@ class _LiquidSegmentedControl extends StatelessWidget {
                     child: AnimatedDefaultTextStyle(
                       duration: 300.ms,
                       style: context.textStyles.bodySmall.copyWith(
-                        color: currentIndex == index ? Colors.white : context.colors.textSecondary,
-                        fontWeight: currentIndex == index ? FontWeight.w800 : FontWeight.w600,
+                        color: currentIndex == index
+                            ? Colors.white
+                            : context.colors.textSecondary,
+                        fontWeight: currentIndex == index
+                            ? FontWeight.w800
+                            : FontWeight.w600,
                       ),
                       child: Text(labels[index]),
                     ),
@@ -154,7 +169,10 @@ class _HeaderCircleButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.colors.cardSurface.withValues(alpha: 0.5),
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.6),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: context.colors.cardShadow,
