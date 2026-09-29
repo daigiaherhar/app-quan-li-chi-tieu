@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ^3.11.0
@@ -58,15 +58,19 @@ dependencies:
 
   # Charts (Syncfusion Community / Commercial license applies)
   syncfusion_flutter_charts: ^33.2.3
+  #database
+  supabase_flutter: ^2.17.2
   drift: ^2.31.0
-  sqlite3_flutter_libs: ^0.6.0+eol
+  # 0.6.0+eol ships no native libs; keep 0.5.x until upgrading drift + sqlite3 3.x hooks.
+  sqlite3_flutter_libs: 0.5.42
   path_provider: ^2.1.5
   path: ^1.9.1
-  google_mlkit_text_recognition: ^0.15.1
+  google_mlkit_text_recognition: ^0.17.1
   firebase_core: ^4.7.0
   firebase_ai: ^3.11.0
   image_picker: ^1.2.1
 
+  envied: ^1.3.10
   freezed: ^3.2.5
 dev_dependencies:
   flutter_test:
@@ -80,12 +84,16 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   drift_dev: ^2.31.0
   build_runner: ^2.14.1
+  envied_generator: ^1.3.10
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
+  # ML Kit plugins still require CocoaPods; keep SPM off until they migrate.
+  config:
+    enable-swift-package-manager: false
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

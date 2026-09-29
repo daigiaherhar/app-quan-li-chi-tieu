@@ -62,3 +62,8 @@ lib/objectbox-model.json
 *.freezed.dart
 *.config.dartandroid/app/key.properties
 *.config.dart
+
+# ⛔️ Ignore env files (keep .env.example as template)
+.env
+.env.*
+!.env.example

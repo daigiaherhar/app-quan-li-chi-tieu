@@ -25,6 +25,10 @@ def flutter_root
 end
 
 require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
+require File.expand_path(
+  '.symlinks/plugins/google_mlkit_commons/ios/scripts/apple_silicon_simulator',
+  __dir__,
+)
 
 flutter_ios_podfile_setup
 
@@ -39,6 +43,7 @@ end
 
 post_install do |installer|
   installer.pods_project.build_configurations.each do |config|
+    config.build_settings['EXCLUDED_ARCHS[sdk=*]'] = 'armv7'
     config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = $iOSVersion
   end
 
@@ -51,6 +56,48 @@ post_install do |installer|
       next unless Gem::Version.new($iOSVersion) > Gem::Version.new(deployment_target)
 
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = $iOSVersion
+    end
+  end
+
+  # Relabel ML Kit arm64 device slices for Apple Silicon iOS 26+ simulators.
+  mlkit_apple_silicon_simulator_patch(installer)
+  install_mlkit_patch_on_runner(installer)
+end
+
+# Pods-Runner script phases can be skipped by Flutter's xcodebuild path.
+# Also attach the patcher to the Runner target so simulator/device builds always
+# relabel ML Kit before linking.
+def install_mlkit_patch_on_runner(installer)
+  phase_name = '[ML Kit] Relabel arm64 slice for current platform'
+  script = <<~'SH'
+    set -euo pipefail
+    : "${PLATFORM_NAME:?PLATFORM_NAME is not set}"
+    : "${PODS_ROOT:?PODS_ROOT is not set}"
+    PATCHER="${PODS_ROOT}/MLKitAppleSiliconSimulator/patch_arm64_simulator.py"
+    if [ ! -f "$PATCHER" ]; then
+      echo "warning: ML Kit Apple Silicon patcher missing at $PATCHER"
+      exit 0
+    fi
+    /usr/bin/env python3 "$PATCHER" \
+      --platform "${PLATFORM_NAME}" \
+      --pods-root "${PODS_ROOT}"
+  SH
+
+  installer.aggregate_targets.each do |aggregate_target|
+    user_project = aggregate_target.user_project
+    user_project.targets.each do |user_target|
+      next unless user_target.name == 'Runner'
+
+      phase = user_target.shell_script_build_phases.find { |p| p.name == phase_name }
+      phase ||= user_target.new_shell_script_build_phase(phase_name)
+      phase.shell_path = '/bin/sh'
+      phase.shell_script = script
+      phase.always_out_of_date = '1' if phase.respond_to?(:always_out_of_date=)
+
+      build_phases = user_target.build_phases
+      build_phases.delete(phase)
+      build_phases.unshift(phase)
+      user_project.save
     end
   end
 end

@@ -68,7 +68,7 @@ class _LedgerTransactionTile extends StatelessWidget {
                       ),
                       context.gap.h2,
                       Text(
-                        '${transaction.categoryId ?? "Khác"} · ${DateFormat('dd/MM/yyyy').format(transaction.happenedAt)}',
+                        '${transaction.nameCategory ?? "Khác"} · ${DateFormat('dd/MM/yyyy').format(transaction.happenedAt)}',
                         style: context.textStyles.label.copyWith(
                           color: context.colors.textSecondary,
                         ),

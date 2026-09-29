@@ -1,4 +1,4 @@
-package com.quanly.quanLyChiTieu
+package com.quanly.chitieu
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -6,13 +6,18 @@ class _ReportsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.w(context), 8.w(context), 16.w(context), 16.w(context)),
+      padding: EdgeInsets.fromLTRB(
+        16.w(context),
+        8.w(context),
+        16.w(context),
+        16.w(context),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: <Widget>[
               Text(
                 'Báo cáo chi tiết',
                 style: context.textStyles.h2.copyWith(
@@ -26,7 +31,7 @@ class _ReportsHeader extends StatelessWidget {
           ),
           context.gap.h8,
           Text(
-            'Phân tích chi tiêu hàng tháng của bạn.',
+            'Thu, chi 6 tháng gần nhất và so với tháng trước.',
             style: context.textStyles.bodySmall.copyWith(
               color: context.colors.textSecondary,
             ),
@@ -39,6 +44,7 @@ class _ReportsHeader extends StatelessWidget {
 
 class _HeaderCircleButton extends StatelessWidget {
   const _HeaderCircleButton({required this.icon, required this.onTap});
+
   final IconData icon;
   final VoidCallback onTap;
 
@@ -51,7 +57,7 @@ class _HeaderCircleButton extends StatelessWidget {
         color: context.colors.cardSurface.withValues(alpha: 0.6),
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
             color: context.colors.cardShadow,
             blurRadius: 10,

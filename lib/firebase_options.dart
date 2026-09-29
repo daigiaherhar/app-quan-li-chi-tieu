@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1032740027042',
     projectId: 'quan-li-thu-chi-c2cdd',
     storageBucket: 'quan-li-thu-chi-c2cdd.firebasestorage.app',
-    iosBundleId: 'com.example.quanLyChiTieu',
+    iosBundleId: 'com.quanly.chitieu',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1032740027042',
     projectId: 'quan-li-thu-chi-c2cdd',
     storageBucket: 'quan-li-thu-chi-c2cdd.firebasestorage.app',
-    iosBundleId: 'com.example.quanLyChiTieu',
+    iosBundleId: 'com.quanly.chitieu',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

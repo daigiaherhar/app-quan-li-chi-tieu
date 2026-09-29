@@ -1,13 +1,31 @@
 part of '../../pages/ledger_page.dart';
 
 class _LedgerHeader extends StatelessWidget {
-  const _LedgerHeader({required this.chipIndex, required this.onChipChanged});
+  const _LedgerHeader({
+    required this.chipIndex,
+    required this.onChipChanged,
+    required this.onOpenCategoryFilter,
+    required this.onOpenDateFilter,
+    required this.onClearDateFilter,
+    required this.onClearCategoryFilter,
+    this.dateFilterLabel,
+    this.categoryFilterLabel,
+  });
 
   final int chipIndex;
   final ValueChanged<int> onChipChanged;
+  final VoidCallback onOpenCategoryFilter;
+  final VoidCallback onOpenDateFilter;
+  final VoidCallback onClearDateFilter;
+  final VoidCallback onClearCategoryFilter;
+  final String? dateFilterLabel;
+  final String? categoryFilterLabel;
 
   @override
   Widget build(BuildContext context) {
+    final bool hasActiveFilters =
+        dateFilterLabel != null || categoryFilterLabel != null;
+
     return Padding(
           padding: EdgeInsets.fromLTRB(
             20.w(context),
@@ -20,11 +38,11 @@ class _LedgerHeader extends StatelessWidget {
             children: <Widget>[
               const SizedBox(height: kToolbarHeight * 0.5),
               Row(
-                children: [
+                children: <Widget>[
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         Text(
                           'Sổ giao dịch',
                           style: context.textStyles.h2.copyWith(
@@ -43,11 +61,16 @@ class _LedgerHeader extends StatelessWidget {
                       ],
                     ),
                   ),
-                  _HeaderCircleButton(icon: Icons.search_rounded, onTap: () {}),
+                  _HeaderCircleButton(
+                    icon: Icons.category_rounded,
+                    isActive: categoryFilterLabel != null,
+                    onTap: onOpenCategoryFilter,
+                  ),
                   context.gap.w12,
                   _HeaderCircleButton(
                     icon: Icons.calendar_today_rounded,
-                    onTap: () {},
+                    isActive: dateFilterLabel != null,
+                    onTap: onOpenDateFilter,
                   ),
                 ],
               ),
@@ -55,14 +78,68 @@ class _LedgerHeader extends StatelessWidget {
               _LiquidSegmentedControl(
                 currentIndex: chipIndex,
                 onIndexChanged: onChipChanged,
-                labels: TabTransaction.values.map((tab) => tab.label).toList(),
+                labels: TabTransaction.values
+                    .map((TabTransaction tab) => tab.label)
+                    .toList(growable: false),
               ),
+              if (hasActiveFilters) ...<Widget>[
+                context.gap.h12,
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: <Widget>[
+                    if (dateFilterLabel != null)
+                      _FilterChipBadge(
+                        icon: Icons.calendar_today_rounded,
+                        label: dateFilterLabel!,
+                        onClear: onClearDateFilter,
+                      ),
+                    if (categoryFilterLabel != null)
+                      _FilterChipBadge(
+                        icon: Icons.category_rounded,
+                        label: categoryFilterLabel!,
+                        onClear: onClearCategoryFilter,
+                      ),
+                  ],
+                ),
+              ],
             ],
           ),
         )
         .animate()
         .slideY(begin: -0.1, duration: 600.ms, curve: Curves.easeOutCubic)
         .fadeIn();
+  }
+}
+
+class _FilterChipBadge extends StatelessWidget {
+  const _FilterChipBadge({
+    required this.icon,
+    required this.label,
+    required this.onClear,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    return InputChip(
+      avatar: Icon(icon, size: 16, color: context.colors.primary),
+      label: Text(
+        label,
+        style: context.textStyles.label.copyWith(
+          color: context.colors.textPrimary,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      onDeleted: onClear,
+      deleteIconColor: context.colors.textSecondary,
+      backgroundColor: context.colors.primary.withValues(alpha: 0.12),
+      side: BorderSide(color: context.colors.primary.withValues(alpha: 0.25)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    );
   }
 }
 
@@ -89,7 +166,7 @@ class _LiquidSegmentedControl extends StatelessWidget {
           color: Colors.white.withValues(alpha: 0.5),
           width: 1.5,
         ),
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 20,
@@ -98,8 +175,7 @@ class _LiquidSegmentedControl extends StatelessWidget {
         ],
       ),
       child: Stack(
-        children: [
-          // Sliding Indicator
+        children: <Widget>[
           AnimatedAlign(
             duration: 300.ms,
             curve: Curves.easeInOutBack,
@@ -113,7 +189,7 @@ class _LiquidSegmentedControl extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: context.colors.primary,
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
+                  boxShadow: <BoxShadow>[
                     BoxShadow(
                       color: context.colors.primary.withValues(alpha: 0.35),
                       blurRadius: 12,
@@ -124,11 +200,10 @@ class _LiquidSegmentedControl extends StatelessWidget {
               ),
             ),
           ),
-          // Labels
           Row(
-            children: List.generate(
+            children: List<Widget>.generate(
               labels.length,
-              (index) => Expanded(
+              (int index) => Expanded(
                 child: GestureDetector(
                   onTap: () => onIndexChanged(index),
                   behavior: HitTestBehavior.opaque,
@@ -157,9 +232,15 @@ class _LiquidSegmentedControl extends StatelessWidget {
 }
 
 class _HeaderCircleButton extends StatelessWidget {
-  const _HeaderCircleButton({required this.icon, required this.onTap});
+  const _HeaderCircleButton({
+    required this.icon,
+    required this.onTap,
+    this.isActive = false,
+  });
+
   final IconData icon;
   final VoidCallback onTap;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -167,13 +248,17 @@ class _HeaderCircleButton extends StatelessWidget {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: context.colors.cardSurface.withValues(alpha: 0.5),
+        color: isActive
+            ? context.colors.primary.withValues(alpha: 0.18)
+            : context.colors.cardSurface.withValues(alpha: 0.5),
         shape: BoxShape.circle,
         border: Border.all(
-          color: Colors.white.withValues(alpha: 0.6),
+          color: isActive
+              ? context.colors.primary.withValues(alpha: 0.45)
+              : Colors.white.withValues(alpha: 0.6),
           width: 1.5,
         ),
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
             color: context.colors.cardShadow,
             blurRadius: 15,
@@ -186,7 +271,13 @@ class _HeaderCircleButton extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
           child: InkWell(
             onTap: onTap,
-            child: Icon(icon, color: context.colors.textPrimary, size: 22),
+            child: Icon(
+              icon,
+              color: isActive
+                  ? context.colors.primary
+                  : context.colors.textPrimary,
+              size: 22,
+            ),
           ),
         ),
       ),
